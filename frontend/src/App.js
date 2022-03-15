@@ -2,7 +2,13 @@ import React from 'react';
 
 function App() {
   return (
-    <div>MAIN HOMEPAGE</div>
+    <div>
+      MAIN HOMEPAGE
+      <p>
+        testing for branching
+      </p>
+    </div>
+
   );
 }
 
