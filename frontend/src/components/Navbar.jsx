@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components';
 import { Search, ShoppingCartOutlined} from '@material-ui/icons';
 import { Badge } from '@material-ui/core';
+import { Link } from 'react-router-dom';
+import Signin from './Signin';
 
 
 const Container = styled.div`
@@ -63,28 +65,35 @@ const MenuItem = styled.div`
 
 
 const Navbar = () => {
-  return (
-    <Container>
-          <Wrapper>
-              <Left>
-                  <Language>EN</Language>
-                  <SearchContainer>
-                      <Input />
-                      <Search style={{color:"gray", fontSize:16}}/>
-                  </SearchContainer>
-              </Left>
-              <Center><Logo>ZEAL.CRAFT</Logo></Center>
-              <Right>
-                <MenuItem>REGISTER</MenuItem>
-                <MenuItem>SIGN IN</MenuItem>
-                <MenuItem>
-                    <Badge badgeContent={4} color="primary">
-                        <ShoppingCartOutlined/>
-                    </Badge>
-                </MenuItem>
-              </Right>
-        </Wrapper>
-    </Container>
+    const [showModal, setShowModal] = useState(false);
+
+    const openModal = () => {
+        setShowModal(prev => !prev);
+    }
+
+    return (
+        <Container>
+            <Wrapper>
+                <Left>
+                    {/* <Language>EN</Language>
+                    <SearchContainer>
+                        <Input />
+                        <Search style={{color:"gray", fontSize:16}}/>
+                    </SearchContainer> */}
+                </Left>
+                <Center><Logo><Link to="/" style={{textDecoration: 'none', color: 'black'}}>ZealCraft</Link></Logo></Center>
+                <Right>
+                    <MenuItem><Link to="/register">REGISTER</Link></MenuItem>
+                    <MenuItem onClick={openModal}><Link to="/signin">SIGN IN</Link></MenuItem>
+                    <Signin showModal={showModal} setShowModal={setShowModal} />
+                    {/* <MenuItem>
+                        <Badge badgeContent={4} color="primary">
+                            <ShoppingCartOutlined/>
+                        </Badge>
+                    </MenuItem> */}
+                </Right>
+            </Wrapper>
+        </Container>
   )
 }
 

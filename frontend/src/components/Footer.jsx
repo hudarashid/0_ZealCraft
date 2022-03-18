@@ -55,9 +55,9 @@ const Footer = () => {
             <Left></Left>
             <Center>
                 <List>
-                    <ListItem><Link to="/">About</Link></ListItem>
-                    <ListItem><Link to="/">Contact</Link></ListItem>
-                    <ListItem><Link to="/">Privacy</Link></ListItem>
+                    <ListItem><Link>About</Link></ListItem>
+                    <ListItem><Link>Contact</Link></ListItem>
+                    <ListItem><Link>Privacy</Link></ListItem>
                 </List>
                 <Company>@ZealCraft 2022</Company>
             </Center>
