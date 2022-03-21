@@ -1,7 +1,5 @@
-import { ArrowLeftOutlined, ArrowRightOutlined } from "@material-ui/icons";
-import { useState } from "react";
 import styled from "styled-components";
-import { sliderItems } from "../data";
+import { Link } from 'react-router-dom';
 
 const Container = styled.div`
     width: 100%;
@@ -35,7 +33,7 @@ const Slider = () => {
   return (
     <Container>
           <Title>A SPACE FOR PASSIONATE CRAFTPEOPLE, ARTIST AND COOKS</Title>
-          <Button>SHOP NOW</Button>
+          <Link to='/allproducts'>SHOP NOW</Link>
     </Container>
   );
 };
