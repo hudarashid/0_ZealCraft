@@ -63,8 +63,8 @@ const CloseModalButton = styled.div`
 const Signin = ({ showModal, setShowModal }) => {
   const navigate = useNavigate();
   const { search } = useLocation();
-  const redirectInUrl = new URLSearchParams(search).get('redirect');
-  const redirect = redirectInUrl ? redirectInUrl : '/';
+  // const redirectInUrl = new URLSearchParams(search).get('redirect');
+  // const redirect = redirectInUrl ? redirectInUrl : '/';
   const modalRef = useRef();
 
   const [email, setEmail] = useState('');
@@ -108,9 +108,6 @@ const Signin = ({ showModal, setShowModal }) => {
 
   //function to close modal by click outside modal
   useEffect(() => {
-    if (userInfo) {
-      navigate(redirect)
-    }
 
   }, []);
 
@@ -142,7 +139,7 @@ const Signin = ({ showModal, setShowModal }) => {
                 <Button type="submit" variant='contained' style={{ backgroundColor: '#F0BF4C', color: 'black' }}>Sign In</Button>
 
                 <p><Link to="/resetPassword">Forgot your password?</Link></p>
-                <p onClick={() => setShowModal(false)}>Don't have an account yet? <Link to={`/register?redirect=${redirect}`}>Register</Link></p>
+                <p onClick={() => setShowModal(false)}>Don't have an account yet? <Link to='/register'>Register</Link></p>
 
               </FormControl>
             </ModalContent>

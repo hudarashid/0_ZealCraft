@@ -42,60 +42,60 @@ const Register = () => {
   const handleChange = (event) => {
     setValue(event.target.value);
   };
-    
-    const [showModal, setShowModal] = useState(false);
-    const openModal = () => {
-      setShowModal(prev => !prev);
+
+  const [showModal, setShowModal] = useState(false);
+  const openModal = () => {
+    setShowModal(prev => !prev);
   }
 
   return (
-      <Container>
-            <Wrapper>
-                <FormControl>  
-                  <AccountCircleOutlinedIcon style={{margin: '0 auto', fontSize: 50}}/>
-                  <Title>Create An Account</Title>
-                  <TextField
-                      variant="outlined"
-                      label="Email"
-                        margin="normal"
-                        fullWidth required
-                  />
-                  <TextField
-                    variant="outlined"
-                    label="Password"
-                    type="password"
-                    margin="normal"
-                    fullWidth required
-                    />
-                  <TextField
-                    variant="outlined"
-                    label="Confirm Password"
-                    type="password"
-                    margin="normal"
-                    fullWidth required
-                    />
-                      
-                
-                  <Text>Please select if your are a seller or buyer</Text>
-                    <RadioGroup
-                      value={value}
-                      onChange={handleChange}
-                      style={{display: 'flex', flexDirection:'row', alignItems: 'center',justifyContent:'center', margin: '10px 0 10px 0'}}
-                    >
-                        <FormControlLabel value="buyer" control={<Radio />} label="Buyer" />
-                        <FormControlLabel value="seller" control={<Radio />} label="Seller" />
-                      </RadioGroup>
-                  
-                  <Button variant='contained' style={{ backgroundColor: '#F0BF4C', color: 'black', marginBottom: '20px' }}>Sign Up</Button>
-                    <HasAccount>Already have an account?
-                      <Link to="/signin" onClick={openModal}><b>Sign In</b></Link> here
-                    </HasAccount> 
-                    <Signin showModal={showModal} setShowModal={setShowModal} />
-                </FormControl > 
-              </Wrapper>
-            <Footer />
-      </Container>
-    )
+    <Container>
+      <Wrapper>
+        <FormControl>
+          <AccountCircleOutlinedIcon style={{ margin: '0 auto', fontSize: 50 }} />
+          <Title>Create An Account</Title>
+          <TextField
+            variant="outlined"
+            label="Email"
+            margin="normal"
+            fullWidth required
+          />
+          <TextField
+            variant="outlined"
+            label="Password"
+            type="password"
+            margin="normal"
+            fullWidth required
+          />
+          <TextField
+            variant="outlined"
+            label="Confirm Password"
+            type="password"
+            margin="normal"
+            fullWidth required
+          />
+
+
+          <Text>Please select if your are a seller or buyer</Text>
+          <RadioGroup
+            value={value}
+            onChange={handleChange}
+            style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', margin: '10px 0 10px 0' }}
+          >
+            <FormControlLabel value="buyer" control={<Radio />} label="Buyer" />
+            <FormControlLabel value="seller" control={<Radio />} label="Seller" />
+          </RadioGroup>
+
+          <Button variant='contained' style={{ backgroundColor: '#F0BF4C', color: 'black', marginBottom: '20px' }}>Sign Up</Button>
+          <HasAccount onClick={openModal}>Already have an account?
+            <Link to="/signin">Sign In</Link> here
+          </HasAccount>
+          <Signin showModal={showModal} setShowModal={setShowModal} />
+        </FormControl >
+      </Wrapper>
+      <Footer />
+    </Container>
+  )
 }
 
 export default Register;
