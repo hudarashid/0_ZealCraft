@@ -3,6 +3,20 @@ import bcrypt from 'bcryptjs';
 const data = {
     users: [
         {
+            firstName: 'Admin',
+            lastName: '1',
+            email: 'admin@example.com',
+            password: bcrypt.hashSync('admin', 8),
+            address: '123 Admin',
+            city: 'Sheffield',
+            postalCode: 'S1 1AB',
+            country: 'UK',
+            phone: 440123456789,
+            isAdmin: true,
+            isUser: false,
+            isCustomer: false,
+        },
+        {
             firstName: 'Huda',
             lastName: 'Rashid',
             email: 'huda@example.com',
@@ -12,9 +26,25 @@ const data = {
             postalCode: 'S2 1WB',
             country: 'UK',
             phone: 44123456784,
+            isAdmin: false,
+            isUser: true,
+            isCustomer: false,
+        },
+        {
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'john@example.com',
+            password: bcrypt.hashSync('john', 8),
+            address: '456 Victoria',
+            city: 'Sheffield',
+            postalCode: 'S2 1WB',
+            country: 'UK',
+            phone: 44123456784,
+            isAdmin: false,
+            isUser: false,
+            isCustomer: true,
         },
     ],
-
     products: [
         {
             name: 'Nike Slim Shirt',

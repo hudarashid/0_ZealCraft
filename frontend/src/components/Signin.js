@@ -1,71 +1,26 @@
 import Axios from 'axios';
 import React, { useRef, useEffect, useCallback, useState, useContext } from 'react';
-import { TextField } from '@material-ui/core/index';
 import ReactDom from "react-dom";
 import styled from 'styled-components';
-import FormControl from '@mui/material/FormControl';
-import Button from '@mui/material/Button';
+import FloatingLabel from 'react-bootstrap/FloatingLabel'
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import Stack from 'react-bootstrap/Stack'
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import CloseIcon from '@mui/icons-material/Close';
 import { Store } from '../Store';
 import { toast } from 'react-toastify';
 import { getError } from '../utils';
+import Modal from 'react-bootstrap/Modal'
 
-
-const Background = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
-  z-index:1000;
-`;
-
-const ModalWrapper = styled.div`
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.2);
-  background: #fff;
-  color: #000;
-  z-index: 1000;
-  padding: 50px;
-  border-radius: 10px;
-`;
-
-const ModalContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  line-height: 1.8;
-  color: #141414;
-
-  p {
-    text-align: center;
-    margin: 1rem;
-  }
-`;
-
-const CloseModalButton = styled.div`
-  cursor: pointer;
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  z-index: 10;
-`;
 
 const Signin = ({ showModal, setShowModal }) => {
   const navigate = useNavigate();
   const { search } = useLocation();
-  // const redirectInUrl = new URLSearchParams(search).get('redirect');
-  // const redirect = redirectInUrl ? redirectInUrl : '/';
-  const modalRef = useRef();
+  const redirectInUrl = new URLSearchParams(search).get('redirect');
+  const redirect = redirectInUrl ? redirectInUrl : '/';
+
+  const handleCloseModal = () => setShowModal(false);
+  const handleShowModal = () => setShowModal(true);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -82,79 +37,76 @@ const Signin = ({ showModal, setShowModal }) => {
       });
       ctxDispatch({ type: 'USER_SIGNIN', payload: data });
       localStorage.setItem('userInfo', JSON.stringify(data));
-      navigate(redirect || '/');
+      if (userInfo && userInfo.isUser) {
+        navigate('/user/userprofile')
+      } else if (userInfo && userInfo.isCustomer) {
+        navigate('/customer/customerprofile')
+      } else {
+        navigate('/admin/dashboard')
+      }
+
     }
     catch (err) {
       toast.error(getError(err));
     }
   }
 
-  const closeModal = e => {
-    if (modalRef.current === e.target) {
-      setShowModal(false);
-      navigate(-1);
-    }
-  }
 
-  //function to close modal by pressing `esc` button
-  const keyPress = useCallback(
-    e => {
-      if (e.key === 'Escape' && showModal) {
-        setShowModal(false);
-        navigate(-1);
-      }
-    }, [setShowModal, showModal]
-  );
-
-  //function to close modal by click outside modal
   useEffect(() => {
+
 
   }, []);
 
   return ReactDom.createPortal(
     <>
-      {showModal ?
-        <Background onClick={closeModal} ref={modalRef}>
-          <ModalWrapper showModal={showModal}>
-            <ModalContent>
-              <FormControl onSubmit={submitHandler}>
-                <h1>Sign In</h1>
-                <TextField
-                  variant="outlined"
-                  label="Email"
-                  type="email"
-                  margin="normal"
-                  fullWidth required
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                <TextField
-                  variant="outlined"
-                  label="Password"
-                  type="password"
-                  margin="normal"
-                  fullWidth required
-                  onChange={(e) => setPassword(e.target.value)}
-                />
+      {
+        <Modal
+          show={showModal}
+          onHide={handleCloseModal}
+          centered
+          keyboard={true}
+        >
+          <Modal.Header closeButton={handleCloseModal}>
+            <Modal.Title style={{ textAlign: 'center' }}>Sign In</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form onSubmit={submitHandler}>
+              <Stack gap={2} className="col-md mx-auto">
+                <FloatingLabel
+                  controlId="floatingInput"
+                  label="Email address"
+                  className="mb-3"
+                >
+                  <Form.Control
+                    type="email"
+                    placeholder="name@example.com"
+                    required
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </FloatingLabel>
+                <FloatingLabel controlId="floatingPassword" label="Password">
+                  <Form.Control
+                    type="password"
+                    placeholder="Password"
+                    size="lg"
+                    required
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                </FloatingLabel>
+                <Button type="submit" variant="warning" active onClick={handleCloseModal}>Sign In</Button>
+              </Stack>
 
-                <Button type="submit" variant='contained' style={{ backgroundColor: '#F0BF4C', color: 'black' }}>Sign In</Button>
+              <p onClick={handleCloseModal} style={{ textAlign: 'center', margin: '20px' }}><Link to="/resetPassword">Forgot your password?</Link></p>
+              <p onClick={handleCloseModal} style={{ textAlign: 'center' }}>Don't have an account yet? <Link to='/register'>Register</Link></p>
 
-                <p><Link to="/resetPassword">Forgot your password?</Link></p>
-                <p onClick={() => setShowModal(false)}>Don't have an account yet? <Link to='/register'>Register</Link></p>
-
-              </FormControl>
-            </ModalContent>
-
-            <CloseModalButton onClick={() => { setShowModal(prev => !prev), navigate(-1) }}>
-              <CloseIcon />
-            </CloseModalButton>
-
-          </ModalWrapper>
-        </Background>
-        :
-        null}
-    </>,
-    document.getElementById('modal')
+            </Form>
+          </Modal.Body>
+        </Modal>
+      }
+    </>
+    , document.getElementById('modal')
   );
+
 }
 
 export default Signin;

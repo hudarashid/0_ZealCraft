@@ -28,6 +28,7 @@ app.use(express.json());
 
 app.use('/api/seed', seedRouter);
 app.use('/api/users', userRouter);
+//app.use('/api/admin', adminRouter);
 
 app.get('/api/products', (req, res) => {
     res.send(data.products);

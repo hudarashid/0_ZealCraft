@@ -1,5 +1,4 @@
 import express from 'express';
-import Admin from '../models/adminModel.js';
 import data from '../data.js';
 import User from '../models/userModel.js';
 
@@ -9,7 +8,7 @@ seedRouter.get('/', async (req, res) => {
     await User.remove({});
     const createdUser = await User.insertMany(data.users);
 
-    res.send({ createdUser })
+    res.send({ createdUser });
 });
 
 export default seedRouter;

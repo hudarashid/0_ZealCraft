@@ -1,6 +1,7 @@
 import React, { useEffect, useReducer, useState } from 'react'
 import styled from 'styled-components';
 import logger from 'use-reducer-logger';
+import Button from 'react-bootstrap/Button'
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import LoadingBox from './LoadingBox';
@@ -40,15 +41,15 @@ const Title = styled.h1`
     color: black;
     margin-bottom: 20px;
 `
-const linkStyle = styled.a`
-    border: none;
-    padding: 10px;
-    background-color: white;
-    color: gray;
-    cursor: pointer;
-    font-weight: 600;
-    text-decoration: none;
-`
+// const linkStyle = styled.a`
+//     border: none;
+//     padding: 10px;
+//     background-color: white;
+//     color: gray;
+//     cursor: pointer;
+//     font-weight: 600;
+//     text-decoration: none;
+// `
 
 const reducer = (state, action) => {
     switch (action.type) {
@@ -97,9 +98,13 @@ const Categories = () => {
                             <Image src={category.img} alt={category.title} />
                             <Info>
                                 <Title>{category.title}</Title>
-                                <Link to={`/categoryitem/${category.slug}`} style={{ linkStyle }}>
+                                <Button
+                                    href={`/categoryitem/${category.slug}`}
+                                    variant="light"
+                                    active
+                                >
                                     SHOP NOW
-                                </Link>
+                                </Button>
 
                             </Info>
                         </CategoryContainer>

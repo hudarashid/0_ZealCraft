@@ -12,6 +12,9 @@ export const generateToken = (user) => {
             postalCode: user.postalCode,
             country: user.country,
             phone: user.phone,
+            isAdmin: user.isAdmin,
+            isUser: user.isUser,
+            isCustomer: user.isCustomer,
         },
         process.env.JWT_SECRET,
         {

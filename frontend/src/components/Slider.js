@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import Button from 'react-bootstrap/Button'
 import { Link } from 'react-router-dom';
 
 const Container = styled.div`
@@ -19,21 +20,12 @@ const Title = styled.h1`
     margin-bottom: 20px;
 `;
 
-const Button = styled.button`
-    border: 1px solid gray;
-    padding: 10px;
-    background-color: white;
-    color: black;
-    cursor: pointer;
-    font-weight: 600;
-`;
-
 const Slider = () => {
-  
+
   return (
     <Container>
-          <Title>A SPACE FOR PASSIONATE CRAFTPEOPLE, ARTIST AND COOKS</Title>
-          <Link to='/allproducts'>SHOP NOW</Link>
+      <Title>A SPACE FOR PASSIONATE CRAFTPEOPLE, ARTIST AND COOKS</Title>
+      <Button href='/allproducts' variant="outline-dark">SHOP NOW</Button>
     </Container>
   );
 };
