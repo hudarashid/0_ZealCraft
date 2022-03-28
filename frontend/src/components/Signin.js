@@ -96,7 +96,7 @@ const Signin = ({ showModal, setShowModal }) => {
                 <Button type="submit" variant="warning" active onClick={handleCloseModal}>Sign In</Button>
               </Stack>
 
-              <p onClick={handleCloseModal} style={{ textAlign: 'center', margin: '20px' }}><Link to="/resetPassword">Forgot your password?</Link></p>
+              <p onClick={handleCloseModal} style={{ textAlign: 'center', margin: '20px' }}><Link to="/forgot-password">Forgot your password?</Link></p>
               <p onClick={handleCloseModal} style={{ textAlign: 'center' }}>Don't have an account yet? <Link to='/register'>Register</Link></p>
 
             </Form>

@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import express from "express";
 import expressAsyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
-import { generateToken } from "../utils.js";
+import { generateToken, resetPasswordToken } from "../utils.js";
 
 const userRouter = express.Router();
 
@@ -68,5 +68,47 @@ userRouter.post(
         });
     })
 );
+
+//forgot password router
+userRouter.post(
+    '/forgot-password',
+    expressAsyncHandler(async (req, res, next) => {
+        const user = await User.findOne({ email: req.body.email });
+        //make sure user exist in database
+        if (!user) {
+            res.send({ message: "User is not registered!" });
+            return;
+        }
+        //if user exist, create a one time link that is valid for 15min
+        res.send({
+            _id: user._id,
+            email: user.email,
+            reset_token: `${resetPasswordToken(user)}+${user.password}`
+        });
+        res.status(401).send({ message: "Invalid email or password" });
+    })
+);
+
+//reset password router
+userRouter.put(
+    '/reset-password',
+    expressAsyncHandler(async (req, res) => {
+
+        const user = await User.findOne({ email: req.body.email });
+        if (user) {
+            user.email = req.body.email
+            user.password = bcrypt.hashSync(req.body.password);
+
+            const updateUserPassword = await user.save();
+            res.send({
+                email: updateUserPassword.email,
+                token: generateToken(updateUserPassword),
+            });
+        } else {
+            res.status(404).send({ message: 'User not found' });
+            return;
+        }
+    }
+    ));
 
 export default userRouter;

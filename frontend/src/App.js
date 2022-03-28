@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { BrowserRouter as Router, Route, Routes, Navigate, Link } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -12,12 +12,17 @@ import UserProtectedRoute from './components/UserProtectedRoute';
 import AdminDashboard from './screens/AdminDashboard';
 import AllProducts from './screens/AllProducts';
 import CustomerProfile from './screens/CustomerProfile';
+import ForgotPassword from './screens/ForgotPassword';
 import Home from './screens/Home';
 import Register from './screens/Register';
 import ResetPassword from './screens/ResetPassword';
 import UserProfile from './screens/UserProfile';
+import { Store } from './Store';
 
 const App = () => {
+
+  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const { userInfo } = state;
   return (
     <Router>
       <ToastContainer position="bottom-center" limit={1} />
@@ -48,7 +53,8 @@ const App = () => {
                 <AdminDashboard />
               </AdminRoute>} />
           <Route path="/searchbar" element={<SearchBar />} />
-          <Route path="/resetPassword" element={<ResetPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/home" element={<Home />} />
         </Routes>
       </main>
