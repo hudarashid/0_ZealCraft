@@ -41,15 +41,6 @@ const Title = styled.h1`
     color: black;
     margin-bottom: 20px;
 `
-// const linkStyle = styled.a`
-//     border: none;
-//     padding: 10px;
-//     background-color: white;
-//     color: gray;
-//     cursor: pointer;
-//     font-weight: 600;
-//     text-decoration: none;
-// `
 
 const reducer = (state, action) => {
     switch (action.type) {
@@ -76,7 +67,7 @@ const Categories = () => {
         const fetchData = async () => {
             dispatch({ type: 'FETCH_REQUEST' });
             try {
-                const result = await axios.get('/api/categories');
+                const result = await axios.get('/api/seed/categories');
                 dispatch({ type: 'FETCH_SUCCESS', payload: result.data });
             }
             catch (err) {

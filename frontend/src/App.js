@@ -16,6 +16,7 @@ import ForgotPassword from './screens/ForgotPassword';
 import Home from './screens/Home';
 import Register from './screens/Register';
 import ResetPassword from './screens/ResetPassword';
+import SearchProducts from './screens/SearchProducts';
 import UserProfile from './screens/UserProfile';
 import { Store } from './Store';
 
@@ -52,6 +53,7 @@ const App = () => {
               <AdminRoute>
                 <AdminDashboard />
               </AdminRoute>} />
+          <Route path="/search" element={<SearchProducts />} />
           <Route path="/searchbar" element={<SearchBar />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />

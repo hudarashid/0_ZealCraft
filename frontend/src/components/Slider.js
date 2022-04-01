@@ -25,7 +25,7 @@ const Slider = () => {
   return (
     <Container>
       <Title>A SPACE FOR PASSIONATE CRAFTPEOPLE, ARTIST AND COOKS</Title>
-      <Button href='/allproducts' variant="outline-dark">SHOP NOW</Button>
+      <Button href='/search' variant="outline-dark">SHOP NOW</Button>
     </Container>
   );
 };

@@ -4,6 +4,8 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import userRouter from './routers/userRouter.js';
 import seedRouter from './routers/seedRouter.js';
+import productRouter from './routers/productRouter.js';
+import categoryRouter from './routers/categoryRouter.js';
 
 dotenv.config();
 
@@ -29,15 +31,12 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/seed', seedRouter);
 app.use('/api/users', userRouter);
+app.use('/api/products', productRouter);
+app.use('/api/category', categoryRouter);
 //app.use('/api/admin', adminRouter);
 
-app.get('/api/products', (req, res) => {
-    res.send(data.products);
-});
 
-app.get('/api/categories', (req, res) => {
-    res.send(data.categories);
-});
+
 
 
 
