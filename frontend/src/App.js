@@ -11,13 +11,18 @@ import Signin from './components/Signin';
 import UserProtectedRoute from './components/UserProtectedRoute';
 import AdminDashboard from './screens/AdminDashboard';
 import AllProducts from './screens/AllProducts';
-import CustomerProfile from './screens/CustomerProfile';
+import CategoriesScreen from './screens/CategoriesScreen';
+import CustomerDashboard from './screens/CustomerDashboard';
+import CustomerListScreen from './screens/CustomerListScreen';
 import ForgotPassword from './screens/ForgotPassword';
 import Home from './screens/Home';
+import ProfileScreen from './screens/ProfileScreen';
 import Register from './screens/Register';
 import ResetPassword from './screens/ResetPassword';
 import SearchProducts from './screens/SearchProducts';
-import UserProfile from './screens/UserProfile';
+import UserDashboard from './screens/UserDashboard';
+import UserEditScreen from './screens/UserEditScreen';
+import UserListScreen from './screens/UserListScreen';
 import { Store } from './Store';
 
 const App = () => {
@@ -33,15 +38,15 @@ const App = () => {
       <main>
         <Routes>
           <Route path="/" element={<Navigate to="/home" />} />
-          <Route path="/user/userprofile" element={
+          <Route path="/user/dashboard" element={
             <UserProtectedRoute>
-              <UserProfile />
+              <UserDashboard />
             </UserProtectedRoute>
           } />
-          <Route path="/customer/customerprofile"
+          <Route path="/customer/dashboard"
             element={
               <CustomerProtectedRoute>
-                <CustomerProfile />
+                <CustomerDashboard />
               </CustomerProtectedRoute>
             } />
           <Route path="/register" element={<Register />} />
@@ -53,6 +58,12 @@ const App = () => {
               <AdminRoute>
                 <AdminDashboard />
               </AdminRoute>} />
+
+          <Route path="/admin/users" element={<UserListScreen />}></Route>
+          <Route path="/admin/customers" element={<CustomerListScreen />} />
+          <Route path="/admin/categories" element={<CategoriesScreen />} />
+          <Route path="/admin/users/:id" element={<UserEditScreen />} />
+          <Route path="/profile" element={<ProfileScreen />} />
           <Route path="/search" element={<SearchProducts />} />
           <Route path="/searchbar" element={<SearchBar />} />
           <Route path="/reset-password" element={<ResetPassword />} />

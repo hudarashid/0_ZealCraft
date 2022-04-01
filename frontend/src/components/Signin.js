@@ -37,10 +37,10 @@ const Signin = ({ showModal, setShowModal }) => {
       });
       ctxDispatch({ type: 'USER_SIGNIN', payload: data });
       localStorage.setItem('userInfo', JSON.stringify(data));
-      if (userInfo && userInfo.isUser) {
-        navigate('/user/userprofile')
-      } else if (userInfo && userInfo.isCustomer) {
-        navigate('/customer/customerprofile')
+      if (data.isUser) {
+        navigate('/user/dashboard')
+      } else if (data.isCustomer) {
+        navigate('/customer/dashboard')
       } else {
         navigate('/admin/dashboard')
       }

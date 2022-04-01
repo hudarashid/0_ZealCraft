@@ -2,7 +2,11 @@ import bcrypt from "bcryptjs";
 import express from "express";
 import expressAsyncHandler from "express-async-handler";
 import User from "../models/userModel.js";
+import { isAuth, isAdmin } from '../utils.js';
 import { generateToken, resetPasswordToken } from "../utils.js";
+import multer from 'multer';
+import path from 'path';
+import ProductCategory from '../models/productCategoryModel.js';
 
 const userRouter = express.Router();
 
@@ -38,15 +42,8 @@ userRouter.post(
     '/register',
     expressAsyncHandler(async (req, res) => {
         const newUser = new User({
-            //firstName: req.body.firstName,
-            //lastName: req.body.lastName,
             email: req.body.email,
             password: bcrypt.hashSync(req.body.password),
-            //address: req.body.address,
-            //city: req.body.city,
-            //postalCode: req.body.postalCode,
-            //country: req.body.country,
-            //phone: req.body.phone,
             isCustomer: req.body.isCustomer,
             isUser: req.body.isUser,
         });
@@ -109,6 +106,134 @@ userRouter.put(
             return;
         }
     }
-    ));
+    )
+);
+
+
+userRouter.get(
+    '/:id',
+    isAuth,
+    expressAsyncHandler(async (req, res) => {
+        const user = await User.findById(req.params.id);
+        if (user) {
+            res.send(user);
+        } else {
+            res.status(404).send({ message: 'User Not Found' });
+        }
+    })
+);
+
+userRouter.get(
+    '/admin/users',
+    isAuth,
+    isAdmin,
+    expressAsyncHandler(async (req, res) => {
+        const users = await User.find({});
+        const updatedUsers = users.filter((user) => user.isUser === true);
+        res.send(updatedUsers);
+    })
+);
+
+userRouter.get(
+    '/admin/customers',
+    isAuth,
+    isAdmin,
+    expressAsyncHandler(async (req, res) => {
+        const customers = await User.find({});
+        const updatedcustomers = customers.filter(
+            (user) => user.isCustomer === true
+        );
+        res.send(updatedcustomers);
+    })
+);
+
+const __dirname = path.resolve();
+console.log(__dirname);
+const DIR = path.join(__dirname, '../frontend/build/images/');
+console.log(DIR);
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, DIR);
+    },
+    filename: (req, file, cb) => {
+        const imageName =
+            new Date().toISOString().replace(/:/g, '-') + '-' + file.originalname;
+        cb(null, imageName);
+    },
+});
+
+const fileFilter = (req, file, cb) => {
+    if (
+        file.mimetype == 'image/png' ||
+        file.mimetype == 'image/jpg' ||
+        file.mimetype == 'image/jpeg'
+    ) {
+        cb(null, true);
+    } else {
+        cb(null, false);
+        return cb(new Error('Only .png, .jpg and .jpeg format allowed!'));
+    }
+};
+
+const upload = multer({
+    storage: storage,
+    fileFilter: fileFilter,
+});
+
+userRouter.get(
+    '/admin/categories',
+    isAuth,
+    expressAsyncHandler(async (req, res) => {
+        const categories = await ProductCategory.find({});
+        res.send(categories);
+    })
+);
+
+userRouter.put(
+    '/profile',
+    isAuth,
+    upload.single('image'),
+    expressAsyncHandler(async (req, res) => {
+        const user = await User.findById(req.user._id);
+        if (user) {
+            user._id = req.user._id;
+            user.firstName = req.body.firstName || user.firstName;
+            user.lastName = req.body.lastName || user.lastName;
+            // user.image = req.file.filename || user.image;
+            user.image = req.body.image || user.image;
+            user.email = req.body.email || user.email;
+            if (req.body.password) {
+                user.password = bcrypt.hashSync(req.body.password, 8);
+            }
+            user.address = req.body.address || user.address;
+            user.city = req.body.city || user.city;
+            user.postalCode = req.body.postalCode || user.postalCode;
+            user.country = req.body.country || user.country;
+            user.phone = req.body.phone || user.phone;
+            user.isAdmin = req.body.isAdmin || user.isAdmin;
+            user.isCustomer = req.body.isCustomer || user.isCustomer;
+            user.isUser = req.body.isUser || user.isUser;
+            const updatedUser = await user.save();
+            res.send({
+                _id: updatedUser._id,
+                firstName: updatedUser.firstName,
+                lastName: updatedUser.lastName,
+                image: updatedUser.image,
+                email: updatedUser.email,
+
+                password: bcrypt.hashSync(updatedUser.password, 8),
+
+                address: updatedUser.address,
+                city: updatedUser.city,
+                postalCode: updatedUser.postalCode,
+                country: updatedUser.country,
+                phone: updatedUser.phone,
+                token: generateToken(updatedUser),
+            });
+        } else {
+            res.status(404).send({ message: 'User not found' });
+        }
+    })
+);
 
 export default userRouter;

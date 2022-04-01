@@ -3,29 +3,28 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import Card from 'react-bootstrap/Card';
 
-const AdminDashboard = () => {
+const CustomerDashboard = () => {
     return (
         <div>
             <Helmet>
                 <title>ZealCraft</title>
             </Helmet>
-            <h1>Admin Dashboard</h1>
+            <h1>Customer Dashboard</h1>
             <div>
-                <h2>Welcome Admin!</h2>
+                <h2>Welcome Customer!</h2>
                 <Card>
                     <Card.Body>
-                        Click <Link to={`/admin/users`}>here</Link> to view users.
+                        Click <Link to={`/customer/orders`}>here</Link> to view orders.
                     </Card.Body>
                 </Card>
                 <Card>
                     <Card.Body>
-                        Click <Link to={`/admin/customers`}>here</Link> to view customers.
+                        Click <Link to={`/customer/search`}>here</Link> to search products.
                     </Card.Body>
                 </Card>
                 <Card>
                     <Card.Body>
-                        Click <Link to={`/admin/categories`}>here</Link> to view product
-                        categories.
+                        Click <Link to={`/customer/cart`}>here</Link> to view cart.
                     </Card.Body>
                 </Card>
             </div>
@@ -33,4 +32,4 @@ const AdminDashboard = () => {
     );
 };
 
-export default AdminDashboard;
+export default CustomerDashboard;
