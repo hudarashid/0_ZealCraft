@@ -11,11 +11,13 @@ import Signin from './components/Signin';
 import UserProtectedRoute from './components/UserProtectedRoute';
 import AdminDashboard from './screens/AdminDashboard';
 import AllProducts from './screens/AllProducts';
+import CartScreen from './screens/CartScreen';
 import CategoriesScreen from './screens/CategoriesScreen';
 import CustomerDashboard from './screens/CustomerDashboard';
 import CustomerListScreen from './screens/CustomerListScreen';
 import ForgotPassword from './screens/ForgotPassword';
 import Home from './screens/Home';
+import ProductScreen from './screens/ProductScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import Register from './screens/Register';
 import ResetPassword from './screens/ResetPassword';
@@ -46,7 +48,9 @@ const App = () => {
           <Route path="/customer/dashboard"
             element={
               <CustomerProtectedRoute>
-                <CustomerDashboard />
+                <CustomerDashboard>
+                  <CartScreen />
+                </CustomerDashboard>
               </CustomerProtectedRoute>
             } />
           <Route path="/register" element={<Register />} />
@@ -63,7 +67,9 @@ const App = () => {
           <Route path="/admin/customers" element={<CustomerListScreen />} />
           <Route path="/admin/categories" element={<CategoriesScreen />} />
           <Route path="/admin/users/:id" element={<UserEditScreen />} />
+          <Route path="/customer/cart" element={<CartScreen />} />
           <Route path="/profile" element={<ProfileScreen />} />
+          <Route path="/product/slug/:slug" element={<ProductScreen />} />
           <Route path="/search" element={<SearchProducts />} />
           <Route path="/searchbar" element={<SearchBar />} />
           <Route path="/reset-password" element={<ResetPassword />} />

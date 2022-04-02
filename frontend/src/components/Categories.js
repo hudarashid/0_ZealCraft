@@ -67,7 +67,7 @@ const Categories = () => {
         const fetchData = async () => {
             dispatch({ type: 'FETCH_REQUEST' });
             try {
-                const result = await axios.get('/api/seed/categories');
+                const result = await axios.get('/api/category');
                 dispatch({ type: 'FETCH_SUCCESS', payload: result.data });
             }
             catch (err) {
@@ -85,12 +85,12 @@ const Categories = () => {
                 error ?
                     (<div>error</div>) :
                     (categories.map((category) => (
-                        <CategoryContainer key={category.slug}>
-                            <Image src={category.img} alt={category.title} />
+                        <CategoryContainer key={category._id}>
+                            <Image src={category.image} alt={category.categoryName} />
                             <Info>
-                                <Title>{category.title}</Title>
+                                <Title>{category.categoryName}</Title>
                                 <Button
-                                    href={`/categoryitem/${category.slug}`}
+                                    href={`/categoryitem/${category.categoryName}`}
                                     variant="light"
                                     active
                                 >

@@ -59,7 +59,7 @@ const MenuItem = styled.div`
 
 const Navbar = () => {
     const { state, dispatch: ctxDispatch } = useContext(Store);
-    const { userInfo } = state;
+    const { cart, userInfo } = state;
 
     const [showModal, setShowModal] = useState(false);
     const handleCloseModal = () => setShowModal(false);
@@ -129,8 +129,10 @@ const Navbar = () => {
                                 </NavDropdown>
                             </MenuItem>
                             <MenuItem>
-                                <Badge badgeContent={4} color="primary">
-                                    <ShoppingCartOutlined />
+                                <Badge badgeContent={cart.cartItems.reduce((a, c) => a + c.quantity, 0)} color="primary">
+                                    <Link to="/customer/cart">
+                                        <ShoppingCartOutlined />
+                                    </Link>
                                 </Badge>
                             </MenuItem>
                         </>

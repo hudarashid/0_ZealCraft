@@ -52,10 +52,11 @@ const Signin = ({ showModal, setShowModal }) => {
   }
 
 
-  useEffect(() => {
-
-
-  }, []);
+  // useEffect(() => {
+  //   if (userInfo && userInfo.isCustomer) {
+  //     navigate(redirect);
+  //   }
+  // }, [navigate, redirect, userInfo]);
 
   return ReactDom.createPortal(
     <>
