@@ -12,7 +12,7 @@ uploadRouter.post(
   '/',
   isAuth,
   isAdmin,
-  upload.single('file'),
+  upload.single('image'),
   async (req, res) => {
     cloudinary.config({
       cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -28,7 +28,7 @@ uploadRouter.post(
             reject(error);
           }
         });
-        streamifier.createReadStream(req.file.buffer).pipe(stream);
+        streamifier.createReadStream(req.image.buffer).pipe(stream);
       });
     };
     const result = await streamUpload(req);
