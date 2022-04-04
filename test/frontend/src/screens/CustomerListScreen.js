@@ -8,6 +8,8 @@ import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { Store } from '../Store';
 import { getError } from '../utils';
+import Table from 'react-bootstrap/Table';
+import { ToastContainer, toast } from 'react-toastify';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -40,9 +42,11 @@ export default function CustomerListScreen() {
     const fetchData = async () => {
       try {
         dispatch({ type: 'FETCH_REQUEST' });
-        const { data } = await axios.get(`/api/ur/admin/customers`, {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
-        });
+        const { data } = await axios.get(
+          `/api/ur/admin/customers`,
+
+          { headers: { Authorization: `Bearer ${userInfo.token}` } }
+        );
         dispatch({ type: 'FETCH_SUCCESS', payload: data });
       } catch (err) {
         dispatch({
@@ -59,20 +63,19 @@ export default function CustomerListScreen() {
       <Helmet>
         <title>Customers</title>
       </Helmet>
-      <h1>Customers</h1>
+      <div className="navbar custom-nav">Customers</div>
       <Container className="medium-container">
         {loading ? (
           <LoadingBox></LoadingBox>
         ) : error ? (
           <MessageBox variant="danger">{error}</MessageBox>
         ) : (
-          <table className="table">
+          <Table borderless className="table-custom">
             <thead>
               <tr>
                 <th>ID</th>
                 <th>NAME</th>
                 <th>EMAIL</th>
-                <th>ROLE</th>
               </tr>
             </thead>
             <tbody>
@@ -83,11 +86,10 @@ export default function CustomerListScreen() {
                     {user.firstName} {user.lastName}
                   </td>
                   <td>{user.email}</td>
-                  <td>
+                  <td className="vertical-align">
                     <Button
-                      type="button"
-                      variant="light"
-                      onClick={() => navigate(`/users/${user._id}`)}
+                      className="btn-primary"
+                      onClick={() => navigate(`/admin/customers/${user._id}`)}
                     >
                       View
                     </Button>
@@ -95,8 +97,15 @@ export default function CustomerListScreen() {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </Table>
         )}
+        <Button
+          className="btn-cancel pull-right"
+          onClick={() => navigate('/admin/dashboard')}
+        >
+          Back
+        </Button>
+        <ToastContainer />
       </Container>
     </div>
   );

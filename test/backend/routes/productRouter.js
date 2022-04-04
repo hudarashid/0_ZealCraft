@@ -1,209 +1,127 @@
 import express from 'express';
 import expressAsyncHandler from 'express-async-handler';
 import Product from '../models/productModel.js';
-import ProductCategory from '../models/productCategoryModel.js';
+import { generateToken } from '../utils.js';
 import { isAuth, isAdmin } from '../utils.js';
+import multer from 'multer';
+import path from 'path';
+import Store from '../models/storeModel.js';
+import ProductCategory from '../models/productCategoryModel.js';
 
 const productRouter = express.Router();
 
-productRouter.get('/', async (req, res) => {
-  const products = await Product.find();
-  res.send(products);
-});
-
-productRouter.post(
-  '/',
+//User portal > ProductEditScreen.js > Fetch product detail based on product id
+productRouter.get(
+  '/products/:id',
   isAuth,
-  isAdmin,
   expressAsyncHandler(async (req, res) => {
-    const newProduct = new Product({
-      name: 'sample name ' + Date.now(),
-      slug: 'sample-name-' + Date.now(),
-      description: 'sample description',
-      image: '/images/p1.jpg',
-      unitOfMeasure: 'sample unit',
-      quantityOnHand: 0,
-      weight: 0,
-      currentPrice: 0,
-      discountedPrice: 0,
-      isFeatured: true,
-      productStatus: 'Available',
-      productCategory: ProductCategory._id,
-    });
-    const product = await newProduct.save();
-    res.send({ message: 'Product Created', product });
-  })
-);
-
-productRouter.put(
-  '/:id',
-  isAuth,
-  isAdmin,
-  expressAsyncHandler(async (req, res) => {
-    const productId = req.params.id;
-    const product = await Product.findById(productId);
+    const product = await Product.findById(req.params.id);
     if (product) {
-      product.name = req.body.name;
-      product.slug = req.body.slug;
-      product.description = req.body.description;
-      product.image = req.body.image;
-      product.unitOfMeasure = req.body.unitOfMeasure;
-      product.quantityOnHand = req.body.quantityOnHand;
-      product.weight = req.body.weight;
-      product.currentPrice = req.body.currentPrice;
-      product.discountedPrice = req.body.discountedPrice;
-      product.isFeatured = req.body.isFeatured;
-      product.productStatus = req.body.productStatus;
-      product.productCategory = req.body.productCategory;
-      await product.save();
-      res.send({ message: 'Product Updated' });
+      const category = await ProductCategory.findById(
+        product.productCategoryId
+      );
+      const store = await Store.findById(product.storeId);
+      res.send({ product, category, store });
+      // console.log({ product, category, store });
     } else {
       res.status(404).send({ message: 'Product Not Found' });
     }
   })
 );
 
-productRouter.delete(
-  '/:id',
+//User portal > CreateProduct.js > Get categories and stores to show in dropdown
+productRouter.get(
+  '/categoriesandstores',
   isAuth,
-  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const stores = await Store.find({ userId: req.user._id });
+    const categories = await ProductCategory.find({});
+    res.send({ stores, categories });
+    console.log({ stores, categories });
+    res.status(404).send({ message: 'Nothing Found' });
+  })
+);
+
+//User portal > CreateProduct.js > Create product
+productRouter.post(
+  '/create/product',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const newProduct = new Product({
+      productName: req.body.productName,
+      productDescription: req.body.productDescription,
+      images: req.body.images,
+      unitOfMeasure: req.body.unitOfMeasure,
+      quantityOnHand: req.body.quantityOnHand,
+      weight: req.body.weight,
+      currentPrice: req.body.currentPrice,
+      discountedPrice: req.body.discountedPrice,
+      isFeatured: req.body.isFeatured,
+      productCategoryId: req.body.productCategoryId,
+      storeId: req.body.storeId,
+    });
+    const product = await newProduct.save();
+    res.status(201).send({ message: 'New Product Created', product });
+  })
+);
+
+//User portal > ProductEditScreen.js > Edit product
+productRouter.put(
+  '/products/:id',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const productId = req.params.id;
+    const product = await Product.findById(productId);
+
+    if (product) {
+      product.productName = req.body.storeName || product.productName;
+      product.productDescription =
+        req.body.productDescription || product.productDescription;
+      product.images = req.body.images || product.images;
+      product.unitOfMeasure = req.body.unitOfMeasure || product.unitOfMeasure;
+      product.quantityOnHand =
+        req.body.quantityOnHand || product.quantityOnHand;
+      product.weight = req.body.weight || product.weight;
+      product.currentPrice = req.body.currentPrice || product.currentPrice;
+      product.discountedPrice =
+        req.body.discountedPrice || product.discountedPrice;
+      product.isFeatured = req.body.isFeatured || product.isFeatured;
+      product.productCategoryId =
+        req.body.productCategoryId || product.productCategoryId;
+      product.storeId = req.body.storeId || product.storeId;
+      const updatedProduct = await product.save();
+      res.send(updatedProduct);
+    } else {
+      res.status(404).send({ message: 'Product Not Updated' });
+    }
+  })
+);
+
+//User portal > ProductListScreen.js > To get products of one store based on store id
+productRouter.get(
+  '/:id/products',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const storeId = req.params.id;
+    // console.log(storeId);
+    const products = await Product.find({ storeId });
+    res.send(products);
+  })
+);
+
+//User portal > ProductEditScreen.js > Delete product
+productRouter.delete(
+  '/products/:id',
+  isAuth,
   expressAsyncHandler(async (req, res) => {
     const product = await Product.findById(req.params.id);
     if (product) {
       await product.remove();
-      res.send({ message: 'Product Deleted' });
+      res.send({ message: 'Product deleted.' });
     } else {
       res.status(404).send({ message: 'Product Not Found' });
     }
   })
 );
 
-const PAGE_SIZE = 3;
-
-productRouter.get(
-  '/admin',
-  isAuth,
-  isAdmin,
-  expressAsyncHandler(async (req, res) => {
-    const { query } = req;
-    const page = query.page || 1;
-    const pageSize = query.pageSize || PAGE_SIZE;
-
-    const products = await Product.find()
-      .skip(pageSize * (page - 1))
-      .limit(pageSize);
-    const countProducts = await Product.countDocuments();
-    res.send({
-      products,
-      countProducts,
-      page,
-      pages: Math.ceil(countProducts / pageSize),
-    });
-  })
-);
-
-productRouter.get(
-  '/search',
-  expressAsyncHandler(async (req, res) => {
-    const { query } = req;
-    const pageSize = query.pageSize || PAGE_SIZE;
-    const page = query.page || 1;
-    const productCategory = query.productCategory || '';
-    const price = query.price || '';
-    const rating = query.rating || '';
-    const order = query.order || '';
-    const searchQuery = query.query || '';
-
-    const queryFilter =
-      searchQuery && searchQuery !== 'all'
-        ? {
-            name: {
-              $regex: searchQuery,
-              $options: 'i',
-            },
-          }
-        : {};
-    const productCategoryFilter =
-      productCategory && productCategory !== 'all' ? { productCategory } : {};
-    const ratingFilter =
-      rating && rating !== 'all'
-        ? {
-            rating: {
-              $gte: Number(rating),
-            },
-          }
-        : {};
-    const priceFilter =
-      price && price !== 'all'
-        ? {
-            // 1-50
-            price: {
-              $gte: Number(price.split('-')[0]),
-              $lte: Number(price.split('-')[1]),
-            },
-          }
-        : {};
-    const sortOrder =
-      order === 'featured'
-        ? { featured: -1 }
-        : order === 'lowest'
-        ? { price: 1 }
-        : order === 'highest'
-        ? { price: -1 }
-        : order === 'toprated'
-        ? { rating: -1 }
-        : order === 'newest'
-        ? { createdAt: -1 }
-        : { _id: -1 };
-
-    const products = await Product.find({
-      ...queryFilter,
-      ...productCategoryFilter,
-      ...priceFilter,
-      ...ratingFilter,
-    })
-      .sort(sortOrder)
-      .skip(pageSize * (page - 1))
-      .limit(pageSize);
-
-    const countProducts = await Product.countDocuments({
-      ...queryFilter,
-      ...productCategoryFilter,
-      ...priceFilter,
-      ...ratingFilter,
-    });
-    res.send({
-      products,
-      countProducts,
-      page,
-      pages: Math.ceil(countProducts / pageSize),
-    });
-  })
-);
-
-productRouter.get(
-  '/productCategory',
-  expressAsyncHandler(async (req, res) => {
-    const productCategory = await Product.find().distinct('productCategory');
-    res.send(productCategory);
-  })
-);
-
-productRouter.get('/slug/:slug', async (req, res) => {
-  const product = await Product.findOne({ slug: req.params.slug });
-  if (product) {
-    res.send(product);
-  } else {
-    res.status(404).send({ message: 'Product Not Found' });
-  }
-});
-productRouter.get('/:id', async (req, res) => {
-  const product = await Product.findById(req.params.id);
-  if (product) {
-    res.send(product);
-  } else {
-    res.status(404).send({ message: 'Product Not Found' });
-  }
-});
-
-// export default productRouter;
+export default productRouter;

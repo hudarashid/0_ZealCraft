@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const storeSchema = new mongoose.Schema(
   {
-    storeName: { type: String, required: true },
+    storeName: { type: String },
     storeDetail: { type: String },
     bannerImage: { type: String },
     additionalPhoto: { type: String },

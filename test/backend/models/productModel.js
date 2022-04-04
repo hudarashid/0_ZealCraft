@@ -12,7 +12,6 @@ const productSchema = new mongoose.Schema(
     currentPrice: { type: Number, required: true },
     discountedPrice: { type: Number },
     isFeatured: { type: Boolean, required: true },
-    productStatus: { type: String, required: true },
     productCategoryId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'ProductCategory',

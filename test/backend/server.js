@@ -5,8 +5,9 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import userRouter from './routes/userRouter.js';
+import storeRouter from './routes/storeRouter.js';
 import categoryRouter from './routes/categoryRouter.js';
-// import productRouter from './routes/productRouter.js';
+import productRouter from './routes/productRouter.js';
 // import storeRouter from './routes/storeRouter.js';
 import seedRouter from './routes/seedRouter.js';
 import path from 'path';
@@ -25,11 +26,11 @@ const app = express(); //Function that returns express app object.
 app.use(express.json());
 app.use(cors());
 app.use(bodyParser.json());
-// app.use(
-//   bodyParser.urlencoded({
-//     extended: false,
-//   })
-// );
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+);
 
 // app.use('/images', express.static(path.dirname('images')));
 // app.use('/images', express.static(path.dirname('images')));
@@ -45,8 +46,8 @@ app.use(bodyParser.json());
 app.use('/api/seed', seedRouter);
 app.use('/api/ur', userRouter);
 app.use('/api/cr', categoryRouter);
-// app.use('/api/pr', productRouter);
-// app.use('/api/sr', storeRouter);
+app.use('/api/sr', storeRouter);
+app.use('/api/pr', productRouter);
 // app.get('/api/products', (req, res) => {
 //   res.send(data.products);
 // });
@@ -57,9 +58,9 @@ app.use('/api/cr', categoryRouter);
 
 const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, '/frontend/build')));
-// app.get('*', (req, res) =>
-//   res.sendFile(path.join(__dirname, '/frontend/build/index.html'))
-// );
+app.get('*', (req, res) =>
+  res.sendFile(path.join(__dirname, '/frontend/build/index.html'))
+);
 
 app.use((err, req, res, next) => {
   res.status(500).send({ message: err.message });

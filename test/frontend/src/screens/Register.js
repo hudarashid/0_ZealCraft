@@ -80,7 +80,11 @@ const Register = () => {
       });
       ctxDispatch({ type: 'USER_SIGNIN', payload: data });
       localStorage.setItem('userInfo', JSON.stringify(data));
-      navigate(redirect || '/');
+      if (data.isUser) {
+        navigate('/user/dashboard');
+      } else if (data.isCustomer) {
+        navigate('/customer/dashboard');
+      }
     } catch (err) {
       toast.error(getError(err));
     }
@@ -165,7 +169,7 @@ const Register = () => {
               </Row>
             </InputGroup>
 
-            <Button type="submit" variant="warning">
+            <Button type="submit" className="btn-primary mt-2">
               Sign Up
             </Button>
             <HasAccount onClick={handleShowModal}>

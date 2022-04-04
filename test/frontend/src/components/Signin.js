@@ -94,8 +94,7 @@ const Signin = ({ showModal, setShowModal }) => {
                 </FloatingLabel>
                 <Button
                   type="submit"
-                  variant="warning"
-                  active
+                  className="btn-primary mt-2"
                   onClick={handleCloseModal}
                 >
                   Sign In

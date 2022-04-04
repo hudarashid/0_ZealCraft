@@ -8,6 +8,8 @@ import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { Store } from '../Store';
 import { getError } from '../utils';
+import Table from 'react-bootstrap/Table';
+import { ToastContainer, toast } from 'react-toastify';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -61,14 +63,14 @@ export default function CategoriesScreen() {
       <Helmet>
         <title>Catgories</title>
       </Helmet>
-      <h1>Product Categories</h1>
+      <div className="navbar custom-nav">Product Categories</div>
       <Container className="medium-container">
         {loading ? (
           <LoadingBox></LoadingBox>
         ) : error ? (
           <MessageBox variant="danger">{error}</MessageBox>
         ) : (
-          <table className="table">
+          <Table borderless className="table-custom">
             <thead>
               <tr>
                 <th>ID</th>
@@ -86,9 +88,10 @@ export default function CategoriesScreen() {
                   <td>{category.categoryStatus}</td>
                   <td>
                     <Button
-                      type="button"
-                      variant="light"
-                      onClick={() => navigate(`/categories/${category._id}`)}
+                      className="btn-primary"
+                      onClick={() =>
+                        navigate(`/admin/categories/${category._id}`)
+                      }
                     >
                       View
                     </Button>
@@ -96,8 +99,15 @@ export default function CategoriesScreen() {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </Table>
         )}
+        <Button
+          className="btn-cancel pull-right"
+          onClick={() => navigate('/admin/dashboard')}
+        >
+          Back
+        </Button>
+        <ToastContainer />
       </Container>
     </div>
   );

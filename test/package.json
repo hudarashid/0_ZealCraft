@@ -22,5 +22,9 @@
   "bugs": {
     "url": "https://github.com/c0047537/ZealCraft/issues"
   },
-  "homepage": "https://github.com/c0047537/ZealCraft#readme"
+  "homepage": "https://github.com/c0047537/ZealCraft#readme",
+  "dependencies": {
+    "react-fontawesome": "^1.7.1",
+    "react-icons": "^4.3.1"
+  }
 }

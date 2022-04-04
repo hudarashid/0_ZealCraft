@@ -16,7 +16,7 @@ const reducer = (state, action) => {
     case 'FETCH_REQUEST':
       return { ...state, loading: true };
     case 'FETCH_SUCCESS':
-      return { ...state, user: action.payload, loading: false };
+      return { ...state, loading: false };
     case 'FETCH_FAIL':
       return { ...state, loading: false, error: action.payload };
     case 'UPDATE_REQUEST':
@@ -42,7 +42,7 @@ const reducer = (state, action) => {
   }
 };
 
-export default function UserEditScreen() {
+export default function CustomerEditScreen() {
   const [
     { loading, error, loadingUpdate, loadingDelete, successDelete },
     dispatch,
@@ -82,7 +82,6 @@ export default function UserEditScreen() {
         const { data } = await axios.get(`/api/ur/admin/${userId}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
-        setUser(data.user);
         setImage(data.image);
         setFirstName(data.firstName);
         setLastName(data.lastName);
@@ -152,9 +151,9 @@ export default function UserEditScreen() {
         type: 'UPDATE_SUCCESS',
         payload: data,
       });
-      toast.success('User updated successfully');
+      toast.success('Customer updated successfully');
       setTimeout(() => {
-        navigate('/admin/users');
+        navigate('/admin/customers');
       }, 3000);
     } catch (error) {
       toast.error(getError(error));
@@ -169,9 +168,9 @@ export default function UserEditScreen() {
         await axios.delete(`/api/ur/admin/${userId}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
-        navigate(`/admin/users`);
-        dispatch({ type: 'DELETE_SUCCESS' });
+        navigate(`/admin/customers`);
         toast.success('User deleted successfully');
+        dispatch({ type: 'DELETE_SUCCESS' });
       } catch (err) {
         toast.error(getError(error));
         dispatch({
@@ -184,9 +183,9 @@ export default function UserEditScreen() {
   return (
     <div>
       <Helmet>
-        <title>User Profile</title>
+        <title>Customer Profile</title>
       </Helmet>
-      <div className="navbar custom-nav">User Profile: {firstName}</div>
+      <div className="navbar custom-nav">Customer Profile: {firstName}</div>
       {loadingDelete && <LoadingBox></LoadingBox>}
       {loading ? (
         <LoadingBox></LoadingBox>
@@ -296,7 +295,7 @@ export default function UserEditScreen() {
               <Form.Control value={role} readonly />
             </Form.Group>
             <div className="mb-3 mr-1" style={{ display: 'flex' }}>
-              {/* &nbsp; */}
+              &nbsp;
               <Button
                 className="btn-delete"
                 type="button"
@@ -310,7 +309,7 @@ export default function UserEditScreen() {
                 className="btn-cancel"
                 type="buttton"
                 style={{ marginLeft: 'auto' }}
-                onClick={() => navigate(`/admin/users`)}
+                onClick={() => navigate(`/admin/customers`)}
               >
                 Cancel
               </Button>
@@ -321,7 +320,24 @@ export default function UserEditScreen() {
               </Button>
               {loadingUpdate && <LoadingBox></LoadingBox>}
             </div>
+            {/*</div> <div className="mb-5">
+              <Button
+                type="submit"
+                className="btn-space btn-primary pull-right"
+              >
+                Update
+              </Button>{' '}
+              <Button
+                className="btn-cancel pull-right"
+                type="buttton"
+                onClick={() => navigate('/admin/customers')}
+              >
+                Cancel
+              </Button>
+              {loadingUpdate && <LoadingBox></LoadingBox>}
+            </div> */}
           </Form>
+
           <ToastContainer />
         </Container>
       )}

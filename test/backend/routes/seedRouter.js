@@ -8,18 +8,18 @@ import Store from '../models/storeModel.js';
 const seedRouter = express.Router();
 
 seedRouter.get('/', async (req, res) => {
-  // await Product.remove({});
-  // const createdProduct = await Product.insertMany(data.products);
+  await Product.remove({});
+  const createdProduct = await Product.insertMany(data.products);
   // await Store.remove({});
   // const createdStore = await Store.insertMany(data.stores);
   // await ProductCategory.remove({});
   // const createdCategory = await ProductCategory.insertMany(
   //   data.productCategories
   // );
-  await User.remove({});
-  const createdUser = await User.insertMany(data.users);
+  // await User.remove({});
+  // const createdUser = await User.insertMany(data.users);
 
-  res.send({ createdUser });
+  res.send({ createdProduct });
 });
 
 export default seedRouter;

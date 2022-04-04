@@ -1,22 +1,22 @@
-import React, { useContext, useEffect, useReducer, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import axios from 'axios';
-import { Store } from '../Store';
-import { getError } from '../utils';
-import Container from 'react-bootstrap/Container';
+import React, { useContext, useEffect, useReducer, useState } from 'react';
 import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import Container from 'react-bootstrap/Container';
 import { Helmet } from 'react-helmet-async';
+import { useNavigate, useParams } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
-import Button from 'react-bootstrap/Button';
+import { Store } from '../Store';
+import { getError } from '../utils';
 
 const reducer = (state, action) => {
   switch (action.type) {
     case 'FETCH_REQUEST':
       return { ...state, loading: true };
     case 'FETCH_SUCCESS':
-      return { ...state, loading: false };
+      return { ...state, summary: action.payload, loading: false };
     case 'FETCH_FAIL':
       return { ...state, loading: false, error: action.payload };
     case 'UPDATE_REQUEST':
@@ -25,65 +25,76 @@ const reducer = (state, action) => {
       return { ...state, loadingUpdate: false };
     case 'UPDATE_FAIL':
       return { ...state, loadingUpdate: false };
-    case 'UPLOAD_REQUEST':
-      return { ...state, loadingUpload: true, errorUpload: '' };
-    case 'UPLOAD_SUCCESS':
+    case 'DELETE_REQUEST':
+      return { ...state, loadingDelete: true, successDelete: false };
+    case 'DELETE_SUCCESS':
       return {
         ...state,
-        loadingUpload: false,
-        errorUpload: '',
+        loadingDelete: false,
+        successDelete: true,
       };
-    case 'UPLOAD_FAIL':
-      return { ...state, loadingUpload: false, errorUpload: action.payload };
-
+    case 'DELETE_FAIL':
+      return { ...state, loadingDelete: false };
+    case 'DELETE_RESET':
+      return { ...state, loadingDelete: false, successDelete: false };
     default:
       return state;
   }
 };
-export default function ProductEditScreen() {
-  const navigate = useNavigate();
-  const params = useParams(); // /product/:id
-  const { id: productId } = params;
 
+export default function ProductEditScreen() {
   const { state } = useContext(Store);
   const { userInfo } = state;
-  const [{ loading, error, loadingUpdate, loadingUpload }, dispatch] =
-    useReducer(reducer, {
-      loading: true,
-      error: '',
-    });
+  const params = useParams();
+  const { id: productId } = params;
+  const navigate = useNavigate();
 
-  const [name, setName] = useState('');
-  const [slug, setSlug] = useState('');
-  const [description, setDescription] = useState('');
-  const [image, setImage] = useState('');
+  const [
+    { loading, error, loadingUpdate, loadingDelete, successDelete },
+    dispatch,
+  ] = useReducer(reducer, {
+    loading: true,
+    error: '',
+    loadingUpdate: false,
+  });
+
+  const [product, setProduct] = useState('');
+  const [productName, setProductName] = useState('');
+  const [productDescription, setProductDescription] = useState('');
+  const [images, setImages] = useState('');
   const [unitOfMeasure, setUnitOfMeasure] = useState('');
   const [quantityOnHand, setQuantityOnHand] = useState('');
   const [weight, setWeight] = useState('');
-  const [currentPrice, setCurrentPrice] = useState(''); 
-  const [discountedPrice, setDiscountedPrice] = useState(''); 
+  const [currentPrice, setCurrentPrice] = useState('');
+  const [discountedPrice, setDiscountedPrice] = useState('');
   const [isFeatured, setIsFeatured] = useState('');
-  const [productStatus, setProductStatus] = useState('');  
-  const [productCategory, setProductCategory] = useState('');
+  const [productCategoryId, setProductCategoryId] = useState('');
+  const [storeId, setStoreId] = useState('');
+  const [categoryName, setCategoryName] = useState('');
+  const [storeName, setStoreName] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         dispatch({ type: 'FETCH_REQUEST' });
-        const { data } = await axios.get(`/api/products/${productId}`);
-        setName(data.name);
-        setSlug(data.slug);
-        setDescription(data.description);
-        setImage(data.image);
-        setUnitOfMeasure(data.unitOfMeasure);
-        setQuantityOnHand(data.quantityOnHand);
-        setWeight(data.weight);
-        setCurrentPrice(data.currentPrice);
-        setDiscountedPrice(data.discountedPrice);
-        setIsFeatured(data.isFeatured);
-        setProductStatus(data.productStatus);
-        setProductCategory(data.productCategory);
-        dispatch({ type: 'FETCH_SUCCESS' });
+        const { data } = await axios.get(`/api/pr/products/${productId}`, {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
+        setProduct(data.product);
+        setProductName(data.product.productName);
+        setProductDescription(data.product.productDescription);
+        setImages(data.product.images);
+        setUnitOfMeasure(data.product.unitOfMeasure);
+        setQuantityOnHand(data.product.quantityOnHand);
+        setWeight(data.product.weight);
+        setCurrentPrice(data.product.currentPrice);
+        setDiscountedPrice(data.product.discountedPrice);
+        setIsFeatured(data.product.isFeatured);
+        setProductCategoryId(data.product.productCategoryId);
+        setStoreId(data.product.storeId);
+        setCategoryName(data.category.categoryName);
+        setStoreName(data.store.storeName);
+        dispatch({ type: 'FETCH_SUCCESS', payload: data });
       } catch (err) {
         dispatch({
           type: 'FETCH_FAIL',
@@ -91,29 +102,32 @@ export default function ProductEditScreen() {
         });
       }
     };
-    fetchData();
-  }, [productId]);
+    if (successDelete) {
+      dispatch({ type: 'DELETE_RESET' });
+    } else {
+      fetchData();
+    }
+  }, [productId, userInfo, successDelete]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
       dispatch({ type: 'UPDATE_REQUEST' });
-      await axios.put(
-        `/api/products/${productId}`,
+      const { data } = await axios.put(
+        `/api/pr/products/${productId}`,
         {
           _id: productId,
-          name,
-          slug,
-          description,          
-          image,
+          productName,
+          productDescription,
+          images,
           unitOfMeasure,
           quantityOnHand,
           weight,
           currentPrice,
           discountedPrice,
           isFeatured,
-          productStatus,
-          productCategory,
+          productCategoryId,
+          storeId,
         },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -121,157 +135,154 @@ export default function ProductEditScreen() {
       );
       dispatch({
         type: 'UPDATE_SUCCESS',
+        payload: data,
       });
       toast.success('Product updated successfully');
-      navigate('/admin/products');
-    } catch (err) {
-      toast.error(getError(err));
+      setTimeout(() => {
+        navigate(`/user/stores/${storeId}/products`);
+      }, 3000);
+    } catch (error) {
+      toast.error(getError(error));
       dispatch({ type: 'UPDATE_FAIL' });
     }
   };
-  const uploadFileHandler = async (e) => {
-    const file = e.target.files[0];
-    const bodyFormData = new FormData();
-    bodyFormData.append('file', file);
-    try {
-      dispatch({ type: 'UPLOAD_REQUEST' });
-      const { data } = await axios.post('/api/upload', bodyFormData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          authorization: `Bearer ${userInfo.token}`,
-        },
-      });
-      dispatch({ type: 'UPLOAD_SUCCESS' });
 
-      toast.success('Image uploaded successfully');
-      setImage(data.secure_url);
-    } catch (err) {
-      toast.error(getError(err));
-      dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) });
+  const deleteHandler = async (product) => {
+    if (window.confirm('Are you sure to delete?')) {
+      try {
+        dispatch({ type: 'DELETE_REQUEST' });
+        await axios.delete(`/api/pr/products/${productId}`, {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
+        navigate(`/user/stores/${storeId}/products`);
+        toast.success('Product deleted successfully');
+        dispatch({ type: 'DELETE_SUCCESS' });
+      } catch (err) {
+        toast.error(getError(error));
+        dispatch({
+          type: 'DELETE_FAIL',
+        });
+      }
     }
   };
-  return (
-    <Container className="small-container">
-      <Helmet>
-        <title>Edit Product ${productId}</title>
-      </Helmet>
-      <h1>Edit Product {productId}</h1>
 
+  return (
+    <div>
+      <Helmet>
+        <title>Product Detail</title>
+      </Helmet>
+      <div className="navbar custom-nav">Edit Product: {productName}</div>
+      {loadingDelete && <LoadingBox></LoadingBox>}
       {loading ? (
         <LoadingBox></LoadingBox>
       ) : error ? (
         <MessageBox variant="danger">{error}</MessageBox>
       ) : (
-        <Form onSubmit={submitHandler}>
-          <Form.Group className="mb-3" controlId="name">
-            <Form.Label>Name</Form.Label>
-            <Form.Control
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="slug">
-            <Form.Label>Slug</Form.Label>
-            <Form.Control
-              value={slug}
-              onChange={(e) => setSlug(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="description">
-            <Form.Label>Description</Form.Label>
-            <Form.Control
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="image">
-            <Form.Label>Image File</Form.Label>
-            <Form.Control
-              value={image}
-              onChange={(e) => setImage(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="imageFile">
-            <Form.Label>Upload File</Form.Label>
-            <Form.Control type="file" onChange={uploadFileHandler} />
-            {loadingUpload && <LoadingBox></LoadingBox>}
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="unitOfMeasure">
-            <Form.Label>Unit Of Measure</Form.Label>
-            <Form.Control
-              value={unitOfMeasure}
-              onChange={(e) => setUnitOfMeasure(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="quantityOnHand">
-            <Form.Label>Quantity On Hand</Form.Label>
-            <Form.Control
-              value={quantityOnHand}
-              onChange={(e) => setQuantityOnHand(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="weight">
-            <Form.Label>Weight</Form.Label>
-            <Form.Control
-              value={weight}
-              onChange={(e) => setWeight(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="currentPrice">
-            <Form.Label>Current Price</Form.Label>
-            <Form.Control
-              value={currentPrice}
-              onChange={(e) => setCurrentPrice(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="discountedPrice">
-            <Form.Label>Discounted Price</Form.Label>
-            <Form.Control
-              value={discountedPrice}
-              onChange={(e) => setDiscountedPrice(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="isFeatured">
-            <Form.Label>Is Featured</Form.Label>
-            <Form.Control
-              value={isFeatured}
-              onChange={(e) => setIsFeatured(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="productStatus">
-            <Form.Label>Product Status</Form.Label>
-            <Form.Control
-              value={productStatus}
-              onChange={(e) => setProductStatus(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="productCategory">
-            <Form.Label>Category</Form.Label>
-            <Form.Control
-              value={productCategory}
-              onChange={(e) => setProductCategory(e.target.value)}
-              required
-            />
-          </Form.Group>      
-          <div className="mb-3">
-            <Button disabled={loadingUpdate} type="submit">
-              Update
-            </Button>
-            {loadingUpdate && <LoadingBox></LoadingBox>}
-          </div>
-        </Form>
+        <Container className="small-container mb-5">
+          <Form onSubmit={submitHandler} className="form-custom">
+            <Form.Group className="mb-3" controlId="pname">
+              <Form.Label>Product Name</Form.Label>
+              <Form.Control
+                value={productName}
+                onChange={(e) => setProductName(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="pdetail">
+              <Form.Label>Product Description</Form.Label>
+              <Form.Control
+                value={productDescription}
+                onChange={(e) => setProductDescription(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="pimage">
+              <Form.Label>Images</Form.Label>
+              <Form.Control
+                value={images}
+                onChange={(e) => setImages(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="punit">
+              <Form.Label>Unit Of Measure</Form.Label>
+              <Form.Control
+                value={unitOfMeasure}
+                onChange={(e) => setUnitOfMeasure(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="pquantity">
+              <Form.Label>Quantity On Hand</Form.Label>
+              <Form.Control
+                value={quantityOnHand}
+                onChange={(e) => setQuantityOnHand(e.target.value)}
+              />{' '}
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="pweight">
+              <Form.Label>Weight</Form.Label>
+              <Form.Control
+                value={weight}
+                onChange={(e) => setWeight(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="price">
+              <Form.Label>Current Price</Form.Label>
+              <Form.Control
+                value={currentPrice}
+                onChange={(e) => setCurrentPrice(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="price">
+              <Form.Label>Discounted Price</Form.Label>
+              <Form.Control
+                value={discountedPrice}
+                onChange={(e) => setDiscountedPrice(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="supportPhone">
+              <Form.Label>Is Featured</Form.Label>
+              <Form.Control
+                value={isFeatured}
+                onChange={(e) => setIsFeatured(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="supportPhone">
+              {/* <Form.Label>Product Category</Form.Label>
+            <Form.Control defaultValue={productCategoryId} readonly />
+          </Form.Group> */}
+              <Form.Label>Product Category</Form.Label>
+              <Form.Control disabled defaultValue={categoryName} />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="supportPhone">
+              <Form.Label>Store</Form.Label>
+              <Form.Control disabled defaultValue={storeName} />
+            </Form.Group>
+            <div className="mb-3 mr-1" style={{ display: 'flex' }}>
+              {/* &nbsp; */}
+              <Button
+                className="btn-delete"
+                type="button"
+                style={{ marginRight: 'auto' }}
+                variant="danger"
+                onClick={() => deleteHandler(product)}
+              >
+                Delete
+              </Button>
+              <Button
+                className="btn-cancel"
+                style={{ marginLeft: 'auto' }}
+                onClick={() => navigate(`/user/stores/${storeId}/products`)}
+              >
+                Cancel
+              </Button>
+              {'  '}
+              {'  '}
+              <Button type="submit" className="btn-space btn-primary">
+                Update
+              </Button>
+              {loadingUpdate && <LoadingBox></LoadingBox>}
+            </div>
+          </Form>
+          <ToastContainer />
+        </Container>
       )}
-    </Container>
+    </div>
   );
 }

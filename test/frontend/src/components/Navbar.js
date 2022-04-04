@@ -12,6 +12,7 @@ import SearchBar from './SearchBar';
 
 const Container = styled.div`
   height: 60px;
+  width: 100%;
 `;
 
 const Wrapper = styled.div`
@@ -96,26 +97,56 @@ const Navbar = () => {
         </Left>
         <Center>
           <Logo>
-            <Link to="/" style={{ textDecoration: 'none', color: 'black' }}>
-              ZealCraft
-            </Link>
+            {userInfo && userInfo.isAdmin ? (
+              <Link
+                to="/admin/dashboard"
+                style={{ textDecoration: 'none', color: '#79589f' }}
+              >
+                ZealCraft
+              </Link>
+            ) : userInfo && userInfo.isCustomer ? (
+              <Link
+                to="/customer/dashboard"
+                style={{ textDecoration: 'none', color: '#79589f' }}
+              >
+                ZealCraft
+              </Link>
+            ) : userInfo && userInfo.isUser ? (
+              <Link
+                to="/user/dashboard"
+                style={{ textDecoration: 'none', color: '#79589f' }}
+              >
+                ZealCraft
+              </Link>
+            ) : (
+              <Link to="/" style={{ textDecoration: 'none', color: '#79589f' }}>
+                ZealCraft
+              </Link>
+            )}
           </Logo>
         </Center>
         <Right>
           {userInfo && userInfo.isCustomer ? (
             <>
               <MenuItem>
-                <NavDropdown title={userInfo.firstName} id="basic-nav-dropdown">
-                  <LinkContainer to="/customer/dashboard">
+                <NavDropdown
+                  title="Menu"
+                  id="basic-nav-dropdown"
+                  style={{ textDecoration: 'none', color: '#79589f' }}
+                >
+                  <LinkContainer
+                    to="/customer/dashboard"
+                    style={{ textDecoration: 'none', color: '#79589f' }}
+                  >
                     <NavDropdown.Item>Dashboard</NavDropdown.Item>
-                  </LinkContainer>
-                  <LinkContainer to="/customer/orders">
-                    <NavDropdown.Item>Oders</NavDropdown.Item>
                   </LinkContainer>
                   <LinkContainer to="/customer/search">
                     <NavDropdown.Item>Search items</NavDropdown.Item>
                   </LinkContainer>
-                  <LinkContainer to="/profile">
+                  <LinkContainer to="/customer/orders">
+                    <NavDropdown.Item>Orders</NavDropdown.Item>
+                  </LinkContainer>
+                  <LinkContainer to="/customer/profile">
                     <NavDropdown.Item>My Profile</NavDropdown.Item>
                   </LinkContainer>
                   <NavDropdown.Divider />
@@ -137,7 +168,7 @@ const Navbar = () => {
           ) : userInfo && userInfo.isUser ? (
             <>
               <MenuItem>
-                <NavDropdown title={userInfo.firstName} id="basic-nav-dropdown">
+                <NavDropdown title="Menu" id="basic-nav-dropdown">
                   <LinkContainer to="/user/dashboard">
                     <NavDropdown.Item>Dashboard</NavDropdown.Item>
                   </LinkContainer>
@@ -147,7 +178,10 @@ const Navbar = () => {
                   <LinkContainer to="/user/orders">
                     <NavDropdown.Item>Orders</NavDropdown.Item>
                   </LinkContainer>
-                  <LinkContainer to="/profile">
+                  <LinkContainer to="/user/create-product">
+                    <NavDropdown.Item>Create Product</NavDropdown.Item>
+                  </LinkContainer>
+                  <LinkContainer to="/user/profile">
                     <NavDropdown.Item>My Profile</NavDropdown.Item>
                   </LinkContainer>
                   <NavDropdown.Divider />
@@ -176,7 +210,7 @@ const Navbar = () => {
                 <LinkContainer to="/admin/categories">
                   <NavDropdown.Item>Categories</NavDropdown.Item>
                 </LinkContainer>
-                <LinkContainer to="/profile">
+                <LinkContainer to="/admin/profile">
                   <NavDropdown.Item>My Profile</NavDropdown.Item>
                 </LinkContainer>
                 <NavDropdown.Divider />

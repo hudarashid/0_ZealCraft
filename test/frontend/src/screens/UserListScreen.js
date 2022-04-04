@@ -8,6 +8,8 @@ import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { Store } from '../Store';
 import { getError } from '../utils';
+import Table from 'react-bootstrap/Table';
+import { ToastContainer, toast } from 'react-toastify';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -61,14 +63,14 @@ export default function UserListScreen() {
       <Helmet>
         <title>Users</title>
       </Helmet>
-      <h1>Users</h1>
+      <div className="navbar custom-nav">Users</div>
       <Container className="medium-container">
         {loading ? (
           <LoadingBox></LoadingBox>
         ) : error ? (
           <MessageBox variant="danger">{error}</MessageBox>
         ) : (
-          <table className="table">
+          <Table borderless className="table-custom">
             <thead>
               <tr>
                 <th>ID</th>
@@ -84,11 +86,10 @@ export default function UserListScreen() {
                     {user.firstName} {user.lastName}
                   </td>
                   <td>{user.email}</td>
-                  <td>
+                  <td className="vertical-align">
                     <Button
-                      type="button"
-                      variant="light"
-                      onClick={() => navigate(`/users/${user._id}`)}
+                      className="btn-primary"
+                      onClick={() => navigate(`/admin/users/${user._id}`)}
                     >
                       View
                     </Button>
@@ -96,8 +97,15 @@ export default function UserListScreen() {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </Table>
         )}
+        <Button
+          className="btn-cancel pull-right"
+          onClick={() => navigate('/admin/dashboard')}
+        >
+          Back
+        </Button>
+        <ToastContainer />
       </Container>
     </div>
   );

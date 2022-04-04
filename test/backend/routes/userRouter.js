@@ -10,6 +10,7 @@ import ProductCategory from '../models/productCategoryModel.js';
 
 const userRouter = express.Router();
 
+//For Sign in
 userRouter.post(
   '/signin',
   expressAsyncHandler(async (req, res) => {
@@ -39,6 +40,7 @@ userRouter.post(
   })
 );
 
+//For Sign up
 userRouter.post(
   '/register',
   expressAsyncHandler(async (req, res) => {
@@ -67,19 +69,7 @@ userRouter.post(
   })
 );
 
-userRouter.get(
-  '/:id',
-  isAuth,
-  expressAsyncHandler(async (req, res) => {
-    const user = await User.findById(req.params.id);
-    if (user) {
-      res.send(user);
-    } else {
-      res.status(404).send({ message: 'User Not Found' });
-    }
-  })
-);
-
+//Admin portal > UserListScreen.js > View users list
 userRouter.get(
   '/admin/users',
   isAuth,
@@ -91,6 +81,7 @@ userRouter.get(
   })
 );
 
+//Admin portal > CustomerListScreen.js > View customers list
 userRouter.get(
   '/admin/customers',
   isAuth,
@@ -104,6 +95,33 @@ userRouter.get(
   })
 );
 
+//Admin portal > CategoriesScreen.js > View categories list
+userRouter.get(
+  '/admin/categories',
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const categories = await ProductCategory.find({});
+    res.send(categories);
+  })
+);
+
+//Admin portal > UserEditScreen.js/CustomerEditScreen.js > View user/customer
+userRouter.get(
+  '/admin/:id',
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id);
+    if (user) {
+      res.send(user);
+    } else {
+      res.status(404).send({ message: 'User Not Found' });
+    }
+  })
+);
+
+//UserEditScreen.js/CustomerEditScreen.js/ProfileScreen.js > For image upload
 const __dirname = path.resolve();
 console.log(__dirname);
 const DIR = path.join(__dirname, '../frontend/build/images/');
@@ -169,15 +187,54 @@ const upload = multer({
 //   })
 // );
 
-userRouter.get(
-  '/admin/categories',
+//Admin portal > UserEditScreen.js/CustomerEditScreen.js > For editing user/customer
+userRouter.put(
+  '/admin/:id',
   isAuth,
+  isAdmin,
   expressAsyncHandler(async (req, res) => {
-    const categories = await ProductCategory.find({});
-    res.send(categories);
+    const user = await User.findById(req.params.id);
+    if (user) {
+      user.firstName = req.body.firstName || user.firstName;
+      user.lastName = req.body.lastName || user.lastName;
+      // user.image = req.file.filename || user.image;
+      user.image = req.body.image || user.image;
+      user.email = req.body.email || user.email;
+      if (req.body.password) {
+        user.password = bcrypt.hashSync(req.body.password, 8);
+      }
+      user.address = req.body.address || user.address;
+      user.city = req.body.city || user.city;
+      user.postalCode = req.body.postalCode || user.postalCode;
+      user.country = req.body.country || user.country;
+      user.phone = req.body.phone || user.phone;
+      user.isAdmin = req.body.isAdmin || user.isAdmin;
+      user.isCustomer = req.body.isCustomer || user.isCustomer;
+      user.isUser = req.body.isUser || user.isUser;
+      const updatedUser = await user.save();
+      console.log(updatedUser);
+      res.send(updatedUser);
+    } else {
+      res.status(404).send({ message: 'User Not Found' });
+    }
   })
 );
 
+//ProfileScreen.js > View profile
+userRouter.get(
+  '/profile',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const user = await User.findById(req.user._id);
+    if (user) {
+      res.send(user);
+    } else {
+      res.status(404).send({ message: 'User Not Found' });
+    }
+  })
+);
+
+//ProfileScreen.js > For editing profile
 userRouter.put(
   '/profile',
   isAuth,
@@ -204,23 +261,40 @@ userRouter.put(
       user.isUser = req.body.isUser || user.isUser;
       const updatedUser = await user.save();
       res.send({
-        _id: updatedUser._id,
-        firstName: updatedUser.firstName,
-        lastName: updatedUser.lastName,
-        image: updatedUser.image,
-        email: updatedUser.email,
+        updatedUser,
+        // _id: updatedUser._id,
+        // firstName: updatedUser.firstName,
+        // lastName: updatedUser.lastName,
+        // image: updatedUser.image,
+        // email: updatedUser.email,
 
-        password: bcrypt.hashSync(updatedUser.password, 8),
+        // password: bcrypt.hashSync(updatedUser.password, 8),
 
-        address: updatedUser.address,
-        city: updatedUser.city,
-        postalCode: updatedUser.postalCode,
-        country: updatedUser.country,
-        phone: updatedUser.phone,
-        token: generateToken(updatedUser),
+        // address: updatedUser.address,
+        // city: updatedUser.city,
+        // postalCode: updatedUser.postalCode,
+        // country: updatedUser.country,
+        // phone: updatedUser.phone,
+        // token: generateToken(updatedUser),
       });
     } else {
       res.status(404).send({ message: 'User not found' });
+    }
+  })
+);
+
+//Admin portal > UserEditScreen.js/CustomerEditScreen.js > Delete user/customer
+userRouter.delete(
+  '/admin/:id',
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id);
+    if (user) {
+      await user.remove();
+      res.send({ message: 'Deletion successfull.' });
+    } else {
+      res.status(404).send({ message: 'Deletion error.' });
     }
   })
 );

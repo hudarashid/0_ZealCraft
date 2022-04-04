@@ -12,13 +12,13 @@ body {
     monospace;
 } */
 
-.site-container {
+/* .site-container {
   min-height: 100vh;
-}
+} */
 
-main {
+/* main {
   flex: 1;
-}
+} */
 
 .users {
   display: flex; /*This is to show products side by side */
@@ -54,4 +54,121 @@ main {
 
 .medium-container {
   max-width: 800px;
+}
+
+.btn-space {
+  margin-left: 5px;
+}
+
+.btn-primary {
+  background-color: #79589f;
+  border-color: #79589f;
+  border: 3px solid-transparent;
+  color: #fff;
+  font-weight: 500;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active {
+  color: #fff;
+  background-color: #a087bd;
+  border-color: #a087bd; /*set the color you want here*/
+}
+
+.btn-cancel {
+  background-color: #eee;
+  border-color: #a087bd;
+  border: 3px solid-transparent;
+  color: #a087bd;
+  font-weight: 500;
+}
+
+.btn-cancel:hover,
+.btn-cancel:focus,
+.btn-cancel:active,
+.btn-cancel.active {
+  color: #fff;
+  background-color: #a087bd;
+  border-color: #a087bd; /*set the color you want here*/
+}
+
+.btn-delete {
+  font-weight: 500;
+}
+
+.card-custom {
+  color: #69587c;
+  background-color: #dcc6f5;
+  /* background: linear-gradient(150deg, #f731db, #4600f1 100%); */
+  border-color: #a087bd;
+  font-weight: 600;
+  width: 100%;
+  padding: 0.5rem;
+  display: flex;
+  align-content: stretch;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+}
+
+.icon {
+  position: absolute;
+  top: 2.5rem;
+  right: 2rem;
+  /* transform: translate(-50%, -50%); */
+  /* margin-left: 12rem; */
+  color: #69587c;
+  /* display: flex;
+  align-items: right; */
+}
+
+.navbar > .container {
+  max-width: 200%;
+}
+
+.custom-nav {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -1px;
+  /* background-color: #79589f; */
+  color: #79589f;
+  display: block;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.table-custom {
+  color: #69587c;
+  background-color: #dcc6f5;
+  /* background: linear-gradient(150deg, #f731db, #4600f1 100%); */
+  border-color: #a087bd;
+  font-weight: 600;
+  width: 100%;
+  text-align: auto;
+  margin-left: 1rem;
+  text-indent: 1rem;
+  border-radius: 10px;
+}
+
+.form-custom {
+  margin-bottom: 5rem;
+}
+
+tr {
+  vertical-align: middle;
+}
+
+.para {
+  color: #69587c;
+  border-color: #a087bd;
+  font-weight: 600;
+  font-size: large;
+  width: 100%;
+  height: 3rem;
+  margin-bottom: 3rem;
+  text-align: center;
 }
