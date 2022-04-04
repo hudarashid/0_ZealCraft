@@ -49,7 +49,7 @@ const data = {
         {
             //id: 1,
             productName: 'The Peace Garden',
-            slug: 'the-peace-garden',
+            //slug: 'the-peace-garden',
             productDescription: 'Sheffield Painting',
             image: 'https://images.squarespace-cdn.com/content/5488ad4ee4b0ba05acd8c3a2/1510490697583-FFYYCVG56V79LA5W03KW/image-asset.jpeg?format=1500w&content-type=image%2Fjpeg',
             unitOfMeasure: 'unit',
@@ -64,7 +64,7 @@ const data = {
         {
             //id: 2,
             productName: 'Handmade Jewellery',
-            slug: 'handmade-jewellery',
+            //slug: 'handmade-jewellery',
             productDescription: 'Made by pure metal',
             image: 'https://i0.wp.com/www.society19.com/wp-content/uploads/2021/06/etsy-jewelry-featured-image-1.jpg?fit=1200%2C900&ssl=1',
             unitOfMeasure: 'unit',
@@ -79,7 +79,7 @@ const data = {
         {
             //id: 3,
             productName: 'Burger and toast',
-            slug: 'burger-and-toast',
+            //slug: 'burger-and-toast',
             productDescription: 'Homemade bread recipe',
             image: 'https://d18mqtxkrsjgmh.cloudfront.net/public/2021-03/Eating%20More%20Ultraprocessed%20%E2%80%98Junk%E2%80%99%20Food%20Linked%20to%20Higher%20CVD%20Risk.jpeg',
             unitOfMeasure: 'unit',
@@ -94,7 +94,7 @@ const data = {
         {
             //id: 4,
             productName: 'Ladies shirt ',
-            slug: 'ladies-shirt',
+            //slug: 'ladies-shirt',
             productDescription: 'high quality shirt',
             image: 'https://www.asiaone.com/sites/default/files/original_images/Apr2020/060420_clothes_unspl.jpg',
             unitOfMeasure: 'unit',
@@ -109,7 +109,7 @@ const data = {
         {
             //id: 5,
             productName: 'Scented Candles',
-            slug: 'scented-candles',
+            //slug: 'scented-candles',
             productDescription: 'Orange scented candles',
             image: 'https://cdn.shopify.com/s/files/1/0054/8034/9799/products/craftfactorycandlemakingkit_1_1296x.jpg?v=1643975047',
             unitOfMeasure: 'unit',
@@ -124,7 +124,7 @@ const data = {
         {
             //id: 6,
             productName: 'Leather bags',
-            slug: 'leather-bags',
+            //slug: 'leather-bags',
             productDescription: 'Multi purpose bags',
             image: 'https://cdn.thewirecutter.com/wp-content/uploads/2020/03/totebags-lowres-2x1-3945.jpg?auto=webp&quality=75&crop=2:1&width=1024',
             unitOfMeasure: 'unit',

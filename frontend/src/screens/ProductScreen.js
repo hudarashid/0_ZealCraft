@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useContext, useEffect, useReducer } from 'react';
+import { useContext, useEffect, useReducer, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -12,6 +12,7 @@ import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { getError } from '../utils';
 import { Store } from '../Store';
+import Signin from '../components/Signin';
 
 const reducer = (state, action) => {
     switch (action.type) {
@@ -31,7 +32,10 @@ const ProductScreen = () => {
     const params = useParams();
     const { slug } = params;
 
-    const [{ loading, error, product, loadingCreateReview }, dispatch] =
+    const [showModal, setShowModal] = useState(false);
+    const handleShowModal = () => setShowModal(true);
+
+    const [{ loading, error, product }, dispatch] =
         useReducer(reducer, {
             product: [],
             loading: true,
@@ -53,7 +57,7 @@ const ProductScreen = () => {
     }, [slug]);
 
     const { state, dispatch: ctxDispatch } = useContext(Store);
-    const { cart } = state;
+    const { cart, userInfo } = state;
 
     const addToCartHandler = async () => {
         const existItem = cart.cartItems.find((x) => x._id === product._id);
@@ -127,9 +131,21 @@ const ProductScreen = () => {
                                 {product.quantityOnHand > 0 && (
                                     <ListGroup.Item>
                                         <div className="d-grid">
-                                            <Button onClick={addToCartHandler} variant="warning">
-                                                Add to Cart
-                                            </Button>
+                                            {(!userInfo) ? (
+                                                <>
+                                                    <Button
+                                                        variant='warning'
+                                                        onClick={handleShowModal}
+                                                    >
+                                                        Sign in to Shop</Button>
+                                                    <Signin showModal={showModal} setShowModal={setShowModal} />
+                                                </>
+                                            ) : (
+
+                                                <Button onClick={addToCartHandler} variant="warning">
+                                                    Add to Cart
+                                                </Button>
+                                            )}
                                         </div>
                                     </ListGroup.Item>
                                 )}

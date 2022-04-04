@@ -74,7 +74,7 @@ const AllProducts = ({ products }) => {
             </Row>
             <Row>
               <div className="mb-2" style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <Button href={`product/slug/${item.slug}`} variant="outline-success" size="md" style={{ marginRight: '5px' }}>
+                <Button href={`product/slug/${item._id}`} variant="outline-success" size="md" style={{ marginRight: '5px' }}>
                   View Product
                 </Button>
                 {item.quantityOnHand === 0

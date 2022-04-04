@@ -66,8 +66,8 @@ productRouter.get(
 
 )
 
-productRouter.get('/slug/:slug', async (req, res) => {
-    const product = await Product.findOne({ slug: req.params.slug });
+productRouter.get('/slug/:id', async (req, res) => {
+    const product = await Product.findOne({ id: req.params.id });
     if (product) {
         res.send(product);
     } else {

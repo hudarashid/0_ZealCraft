@@ -9,6 +9,7 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Alert from 'react-bootstrap/Alert'
 
 
 export default function CartScreen() {
@@ -58,16 +59,17 @@ export default function CartScreen() {
                                     {cartItems.map((item) => (
                                         <ListGroup.Item key={item._id}>
                                             <Row className="align-items-center" style={{ justifyContent: 'space-around' }}>
-                                                <Col md={6}>
+                                                <Col md={4} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                                                     <img
                                                         src={item.image}
                                                         alt={item.productName}
                                                         className="img-fluid rounded img-thumbnail"
                                                     ></img>{' '}
-                                                    <Link to={`/product/slug/${item.slug}`}>{item.productName}</Link>
+                                                    <Link to={`/product/slug/${item._id}`}>{item.productName}</Link>
                                                 </Col>
-                                                <Col md={3}>
-                                                    <Button
+
+                                                <Col md={3} style={{ display: 'flex', alignItems: 'baseline' }}>
+                                                    <Alert
                                                         onClick={() =>
                                                             updateCartHandler(item, item.quantity - 1)
                                                         }
@@ -75,18 +77,21 @@ export default function CartScreen() {
                                                         disabled={item.quantity === 1}
                                                     >
                                                         <i className="fas fa-minus-circle"></i>
-                                                    </Button>{' '}
+                                                    </Alert>{' '}
                                                     <span>{item.quantity}</span>{' '}
-                                                    <Button
+                                                    <Alert
                                                         variant="light"
                                                         onClick={() =>
                                                             updateCartHandler(item, item.quantity + 1)
                                                         }
                                                         disabled={item.quantity === item.quantityOnHand}
                                                     >
+
                                                         <i className="fas fa-plus-circle"></i>
-                                                    </Button>
+
+                                                    </Alert>
                                                 </Col>
+
                                                 <Col md={1}>${item.currentPrice}</Col>
                                                 <Col md={1}>
                                                     <Button
@@ -120,7 +125,7 @@ export default function CartScreen() {
                                         <div className="d-grid">
                                             <Button
                                                 type="button"
-                                                variant="primary"
+                                                variant="warning"
                                                 onClick={checkoutHandler}
                                                 disabled={cartItems.length === 0}
                                             >

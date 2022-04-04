@@ -190,7 +190,7 @@ const OrderScreen = () => {
                                                         alt={item.productName}
                                                         className="img-fluid rounded img-thumbnail"
                                                     ></img>{' '}
-                                                    <Link to={`/product/slug/${item.slug}`}>{item.productName}</Link>
+                                                    <Link to={`/product/slug/${item._id}`}>{item.productName}</Link>
                                                 </Col>
                                                 <Col md={3}>
                                                     <span>{item.quantity}</span>

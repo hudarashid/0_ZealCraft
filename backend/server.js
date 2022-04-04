@@ -16,6 +16,7 @@ mongoose
         useNewUrlParser: true,
         useUnifiedTopology: true,
         dbName: 'zealcraft-database'
+        //dbName: 'amazona'
     })
     .then(() => {
         console.log('Database connection is ready..');
