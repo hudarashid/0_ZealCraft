@@ -12,6 +12,7 @@
     "@mui/material": "^5.5.1",
     "@mui/styled-engine-sc": "^5.4.2",
     "@mui/styles": "^5.5.1",
+    "@paypal/react-paypal-js": "^7.6.0",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^13.5.0",

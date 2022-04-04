@@ -14,12 +14,12 @@ const CustomerDashboard = () => {
                 <h2>Welcome Customer!</h2>
                 <Card>
                     <Card.Body>
-                        Click <Link to={`/customer/orders`}>here</Link> to view orders.
+                        Click <Link to={`/customer/orderhistory`}>here</Link> to view orders.
                     </Card.Body>
                 </Card>
                 <Card>
                     <Card.Body>
-                        Click <Link to={`/customer/search`}>here</Link> to search products.
+                        Click <Link to={`/search`}>here</Link> to search products.
                     </Card.Body>
                 </Card>
                 <Card>

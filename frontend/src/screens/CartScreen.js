@@ -35,7 +35,7 @@ export default function CartScreen() {
     };
 
     const checkoutHandler = () => {
-        navigate('/signin?redirect=/shipping');
+        navigate('/shipping');
     };
 
     return (
@@ -50,7 +50,7 @@ export default function CartScreen() {
                     <Col md={8}>
                         {cartItems.length === 0 ? (
                             <MessageBox>
-                                Cart is empty. <Link to="/">Go Shopping</Link>
+                                Cart is empty. <Link to="/search">Go Shopping</Link>
                             </MessageBox>
                         ) : (
                             <>

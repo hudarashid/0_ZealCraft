@@ -2,7 +2,7 @@ import React, { useEffect, useReducer, useState } from 'react'
 import styled from 'styled-components';
 import logger from 'use-reducer-logger';
 import Button from 'react-bootstrap/Button'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import LoadingBox from './LoadingBox';
 
@@ -56,13 +56,15 @@ const reducer = (state, action) => {
 };
 
 const Categories = () => {
+    const navigate = useNavigate();
+
     const [{ loading, error, categories }, dispatch] = useReducer(logger(reducer), {
         categories: [],
         loading: true,
         error: '',
     });
 
-
+    //fetch data from productCategory model
     useEffect(() => {
         const fetchData = async () => {
             dispatch({ type: 'FETCH_REQUEST' });
@@ -90,7 +92,7 @@ const Categories = () => {
                             <Info>
                                 <Title>{category.categoryName}</Title>
                                 <Button
-                                    href={`/categoryitem/${category.categoryName}`}
+                                    href={`/search`}
                                     variant="light"
                                     active
                                 >
@@ -102,7 +104,7 @@ const Categories = () => {
                     )))
             }
 
-        </Container>
+        </Container >
     )
 }
 

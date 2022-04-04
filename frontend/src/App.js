@@ -17,11 +17,16 @@ import CustomerDashboard from './screens/CustomerDashboard';
 import CustomerListScreen from './screens/CustomerListScreen';
 import ForgotPassword from './screens/ForgotPassword';
 import Home from './screens/Home';
+import OrderHistoryScreen from './screens/OrderHistoryScreen';
+import OrderScreen from './screens/OrderScreen';
+import PaymentMethodScreen from './screens/PaymentMethodScreen';
+import PlaceOrderScreen from './screens/PlaceOrderScreen';
 import ProductScreen from './screens/ProductScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import Register from './screens/Register';
 import ResetPassword from './screens/ResetPassword';
 import SearchProducts from './screens/SearchProducts';
+import ShippingAddressScreen from './screens/ShippingAddressScreen';
 import UserDashboard from './screens/UserDashboard';
 import UserEditScreen from './screens/UserEditScreen';
 import UserListScreen from './screens/UserListScreen';
@@ -39,7 +44,9 @@ const App = () => {
       </header>
       <main>
         <Routes>
-          <Route path="/" element={<Navigate to="/home" />} />
+          <Route path="/" element={<Navigate to="/home" />} >
+
+          </Route>
           <Route path="/user/dashboard" element={
             <UserProtectedRoute>
               <UserDashboard />
@@ -53,8 +60,9 @@ const App = () => {
                 </CustomerDashboard>
               </CustomerProtectedRoute>
             } />
-          <Route path="/register" element={<Register />} />
-          <Route path="/signin" element={<Signin />} />
+          <Route path="/register" element={<Register />} >
+
+          </Route>
           <Route path="/categoryitem/:slug" element={<CategoryItem />} />
           <Route path="/allproducts" element={<AllProducts />} />
           <Route path="/admin/dashboard"
@@ -67,11 +75,18 @@ const App = () => {
           <Route path="/admin/customers" element={<CustomerListScreen />} />
           <Route path="/admin/categories" element={<CategoriesScreen />} />
           <Route path="/admin/users/:id" element={<UserEditScreen />} />
+          <Route path="/customer/orderhistory" element={<OrderHistoryScreen />} />
           <Route path="/customer/cart" element={<CartScreen />} />
           <Route path="/profile" element={<ProfileScreen />} />
           <Route path="/product/slug/:slug" element={<ProductScreen />} />
           <Route path="/search" element={<SearchProducts />} />
           <Route path="/searchbar" element={<SearchBar />} />
+          <Route path="/shipping" element={<ShippingAddressScreen />} />
+          <Route path="/payment" element={<PaymentMethodScreen />} />
+          <Route path="/placeorder" element={<PlaceOrderScreen />} />
+          <Route path="/order/:id" element={<OrderScreen />}
+          ></Route>
+          <Route path="/signin" element={<Signin />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/home" element={<Home />} />

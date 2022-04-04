@@ -8,30 +8,23 @@ import Card from 'react-bootstrap/Card'
 import Button from 'react-bootstrap/Button'
 import Badge from 'react-bootstrap/Badge';
 import { Store } from '../Store';
+import Signin from '../components/Signin';
 
 
 const AllProducts = ({ products }) => {
 
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const {
+  const { userInfo,
     cart: { cartItems },
   } = state;
+
+  const [showModal, setShowModal] = useState(false);
+  const handleCloseModal = () => setShowModal(false);
+  const handleShowModal = () => setShowModal(true);
 
   const addToCartHandler = async (item) => {
     const existItem = cartItems.find((x) => x._id === products._id);
     const quantity = existItem ? existItem.quantity + 1 : 1;
-    const { data } = await axios.get(`/api/products/${item._id}`);
-    if (data.quantityOnHand < quantity) {
-      window.alert('Sorry. Product is out of stock');
-      return;
-    }
-    ctxDispatch({
-      type: 'CART_ADD_ITEM',
-      payload: { ...item, quantity },
-    });
-  };
-
-  const updateCartHandler = async (item, quantity) => {
     const { data } = await axios.get(`/api/products/${item._id}`);
     if (data.quantityOnHand < quantity) {
       window.alert('Sorry. Product is out of stock');
@@ -89,10 +82,18 @@ const AllProducts = ({ products }) => {
                     <Button variant="light" disabled>
                       Out of stock
                     </Button>
-                  )
-                  : (
-                    <Button onClick={() => addToCartHandler(item)}>Add to cart</Button>
-                  )}
+                  ) : (!userInfo) ?
+                    (<>
+                      <Button
+                        onClick={handleShowModal}
+                      >
+                        Sign in to Shop</Button>
+                      <Signin showModal={showModal} setShowModal={setShowModal} />
+                    </>
+                    )
+                    : (
+                      <Button onClick={() => addToCartHandler(item)}>Add to cart</Button>
+                    )}
 
               </div>
             </Row>

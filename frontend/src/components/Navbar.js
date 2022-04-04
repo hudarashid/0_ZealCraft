@@ -72,6 +72,8 @@ const Navbar = () => {
     const signoutHandler = () => {
         ctxDispatch({ type: 'USER_SIGNOUT' });
         localStorage.removeItem('userInfo');
+        localStorage.removeItem('shippingAddress');
+        localStorage.removeItem('paymentMethod');
     };
 
     return (
@@ -109,10 +111,10 @@ const Navbar = () => {
                                     <LinkContainer to="/customer/dashboard">
                                         <NavDropdown.Item>Dashboard</NavDropdown.Item>
                                     </LinkContainer>
-                                    <LinkContainer to="/customer/orders">
+                                    <LinkContainer to="/customer/orderhistory">
                                         <NavDropdown.Item>Orders</NavDropdown.Item>
                                     </LinkContainer>
-                                    <LinkContainer to="/customer/search">
+                                    <LinkContainer to="search">
                                         <NavDropdown.Item>Search items</NavDropdown.Item>
                                     </LinkContainer>
                                     <LinkContainer to="/profile">
@@ -197,8 +199,8 @@ const Navbar = () => {
                             </MenuItem>
                         </>
                     )}
-
                     <Signin showModal={showModal} setShowModal={setShowModal} />
+
                 </Right>
             </Wrapper>
         </Container>

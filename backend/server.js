@@ -6,6 +6,7 @@ import userRouter from './routers/userRouter.js';
 import seedRouter from './routers/seedRouter.js';
 import productRouter from './routers/productRouter.js';
 import categoryRouter from './routers/categoryRouter.js';
+import orderRouter from './routers/orderRouter.js';
 
 dotenv.config();
 
@@ -28,9 +29,13 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.get('/api/keys/paypal', (req, res) => {
+    res.send(process.env.PAYPAL_CLIENT_ID || 'sb');
+})
 
 app.use('/api/seed', seedRouter);
 app.use('/api/users', userRouter);
+app.use('/api/orders', orderRouter);
 app.use('/api/products', productRouter);
 app.use('/api/category', categoryRouter);
 //app.use('/api/admin', adminRouter);
