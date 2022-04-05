@@ -61,9 +61,9 @@ export default function UserProfileScreen() {
   const [isCustomer, setIsCustomer] = useState('');
   const [isUser, setIsUser] = useState('');
 
-  const photoChange = (e) => {
-    setPhoto(e.target.files[0]);
-  };
+  // const photoChange = (e) => {
+  //   setPhoto(e.target.files[0]);
+  // };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -105,7 +105,7 @@ export default function UserProfileScreen() {
           _id: userInfo._id,
           firstName,
           lastName,
-          photo,
+          image,
           email,
           address,
           city,
@@ -146,17 +146,26 @@ export default function UserProfileScreen() {
       <div className="navbar custom-nav">Edit Profile</div>
       <Container className="small-container mb-5">
         <Form onSubmit={submitHandler}>
-          <Form.Group className="mb-3" controlId="imageFile">
+          {/* <Form.Group className="mb-3" controlId="imageFile">
             <Form.Label>Upload File</Form.Label>
             <Form.Control type="file" filename="image" onChange={photoChange} />
-          </Form.Group>
-          <Form.Group controlId="formFile" className="mb-3">
+          </Form.Group> */}
+          {/* <Form.Group controlId="formFile" className="mb-3">
             <Form.Label>Profile Photo</Form.Label>
             <br />
             <img
               src={`/images/${image}`}
               className="img-thumbnail"
               alt="hello"
+            />
+          </Form.Group> */}
+          <Form.Group className="mb-3" controlId="photo">
+            <Form.Label className="mr-3">Profile Photo</Form.Label>
+            <img src={image} className="img-thumbnail" alt="hello" />
+            <Form.Control
+              className="mt-3"
+              value={image}
+              onChange={(e) => setImage(e.target.value)}
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="firstName">
@@ -259,7 +268,7 @@ export default function UserProfileScreen() {
             {loadingUpdate && <LoadingBox></LoadingBox>}
           </div>
         </Form>
-        <ToastContainer />
+        {/* <ToastContainer /> */}
       </Container>
     </div>
   );

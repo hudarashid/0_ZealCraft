@@ -13,20 +13,6 @@ import ToggleButton from 'react-bootstrap/ToggleButton';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 
-// const reducer = (state, action) => {
-//   switch (action.type) {
-//     case 'FETCH_REQUEST':
-//       return { ...state, loading: true };
-//     case 'FETCH_SUCCESS':
-//       return { ...state, categories: action.payload, loading: false };
-//     case 'FETCH_FAIL':
-//       return { ...state, loading: false, error: action.payload };
-
-//     default:
-//       return state;
-//   }
-// };
-
 const reducer = (state, action) => {
   switch (action.type) {
     case 'FETCH_REQUEST':
@@ -69,6 +55,8 @@ export default function CreateProduct() {
   const [currentPrice, setCurrentPrice] = useState('');
   const [discountedPrice, setDiscountedPrice] = useState('');
   const [isFeatured, setIsFeatured] = useState('');
+  const [productStatus, setProductStatus] = useState('');
+
   const [storeId, setStoreId] = useState('');
   const [productCategoryId, setProductCategoryId] = useState('');
 
@@ -91,6 +79,16 @@ export default function CreateProduct() {
     fetchData();
   }, [userInfo]);
 
+  const [productCategory, setProductCategory] = useState('');
+  const handleChange = (e) => {
+    setProductCategoryId(
+      e.target.options[e.target.options.selectedIndex].getAttribute('data-key')
+    );
+    setProductCategory(
+      e.target.options[e.target.options.selectedIndex].getAttribute('value')
+    );
+  };
+
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
@@ -107,7 +105,9 @@ export default function CreateProduct() {
           currentPrice: currentPrice,
           discountedPrice: discountedPrice,
           isFeatured: isFeatured,
+          productCategory: productCategory,
           productCategoryId: productCategoryId,
+          productStatus: productStatus,
           storeId: storeId,
         },
         {
@@ -140,6 +140,15 @@ export default function CreateProduct() {
           <MessageBox variant="danger">{error}</MessageBox>
         ) : (
           <Form onSubmit={submitHandler}>
+            <Form.Group className="mb-3" controlId="pimage">
+              <Form.Label className="mr-3">Images</Form.Label>
+              <img src={images} className="img-thumbnail" alt={productName} />
+              <Form.Control
+                className="mt-3"
+                value={images}
+                onChange={(e) => setImages(e.target.value)}
+              />
+            </Form.Group>
             <Form.Group className="mb-3" controlId="pname">
               <Form.Label>Product Name</Form.Label>
               <Form.Control
@@ -154,13 +163,7 @@ export default function CreateProduct() {
                 onChange={(e) => setProductDescription(e.target.value)}
               />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="pimage">
-              <Form.Label>Images</Form.Label>
-              <Form.Control
-                value={images}
-                onChange={(e) => setImages(e.target.value)}
-              />
-            </Form.Group>
+
             <Form.Group className="mb-3" controlId="punit">
               <Form.Label>Unit Of Measure</Form.Label>
               <Form.Control
@@ -196,25 +199,65 @@ export default function CreateProduct() {
                 onChange={(e) => setDiscountedPrice(e.target.value)}
               />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="supportPhone">
+            <Form.Group className="mb-1" controlId="featured">
               <Form.Label>Is Featured</Form.Label>
-              <Form.Control
-                value={isFeatured}
-                onChange={(e) => setIsFeatured(e.target.value)}
-              />
             </Form.Group>
+            <ToggleButtonGroup
+              className="mb-3"
+              type="radio"
+              name="featured"
+              defaultValue={isFeatured}
+              onChange={(value) => setIsFeatured(value)}
+            >
+              {' '}
+              <ToggleButton
+                id="tbg-btn-3"
+                value={true}
+                variant="outline-success"
+              >
+                Yes
+              </ToggleButton>
+              <ToggleButton
+                id="tbg-btn-4"
+                value={false}
+                variant="outline-secondary"
+              >
+                No
+              </ToggleButton>
+            </ToggleButtonGroup>
+            <Form.Group className="mb-1" controlId="status">
+              <Form.Label>Product Status</Form.Label>
+            </Form.Group>
+            <ToggleButtonGroup
+              className="mb-3"
+              type="radio"
+              name="storeStatus"
+              defaultValue={productStatus}
+              onChange={(value) => setProductStatus(value)}
+            >
+              {' '}
+              <ToggleButton
+                id="tbg-btn-1"
+                value={'Active'}
+                variant="outline-success"
+              >
+                Active
+              </ToggleButton>
+              <ToggleButton
+                id="tbg-btn-2"
+                value={'Inactive'}
+                variant="outline-secondary"
+              >
+                Inactive
+              </ToggleButton>
+            </ToggleButtonGroup>
+
             <Form.Group controlId="pname">
               <Form.Label>Select Category</Form.Label>
               <Form.Select
                 className="mb-3"
                 aria-label="Default select example"
-                onChange={(e) =>
-                  setProductCategoryId(
-                    e.target.options[
-                      e.target.options.selectedIndex
-                    ].getAttribute('data-key')
-                  )
-                }
+                onChange={handleChange}
               >
                 <option key={0} value={'Select Category'}>
                   Select Category
@@ -257,6 +300,10 @@ export default function CreateProduct() {
                 ))}
               </Form.Select>
             </Form.Group>
+            {/* <Form.Group className="mb-3" controlId="supportPhone">
+              <Form.Label>Selected Category Name</Form.Label>
+              <Form.Control value={productCategory} readonly />
+            </Form.Group> */}
             <div className="mb-3 mt-2" style={{ display: 'flex' }}>
               <Button
                 className="btn-cancel"
@@ -275,7 +322,6 @@ export default function CreateProduct() {
             </div>
           </Form>
         )}
-        <ToastContainer />
       </Container>
     </div>
   );

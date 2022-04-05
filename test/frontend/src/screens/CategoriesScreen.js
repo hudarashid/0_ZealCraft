@@ -64,6 +64,15 @@ export default function CategoriesScreen() {
         <title>Catgories</title>
       </Helmet>
       <div className="navbar custom-nav">Product Categories</div>
+      <div style={{ display: 'flex' }}>
+        <Button
+          style={{ marginLeft: 'auto' }}
+          className="btn-primary mb-2"
+          onClick={() => navigate(`/admin/create-category`)}
+        >
+          Create Category
+        </Button>
+      </div>
       <Container className="medium-container">
         {loading ? (
           <LoadingBox></LoadingBox>
@@ -107,7 +116,6 @@ export default function CategoriesScreen() {
         >
           Back
         </Button>
-        <ToastContainer />
       </Container>
     </div>
   );

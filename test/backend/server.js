@@ -8,9 +8,10 @@ import userRouter from './routes/userRouter.js';
 import storeRouter from './routes/storeRouter.js';
 import categoryRouter from './routes/categoryRouter.js';
 import productRouter from './routes/productRouter.js';
-// import storeRouter from './routes/storeRouter.js';
+import orderRouter from './routes/orderRouter.js';
 import seedRouter from './routes/seedRouter.js';
 import path from 'path';
+
 dotenv.config();
 
 mongoose
@@ -48,6 +49,7 @@ app.use('/api/ur', userRouter);
 app.use('/api/cr', categoryRouter);
 app.use('/api/sr', storeRouter);
 app.use('/api/pr', productRouter);
+app.use('/api/or', orderRouter);
 // app.get('/api/products', (req, res) => {
 //   res.send(data.products);
 // });
@@ -58,9 +60,13 @@ app.use('/api/pr', productRouter);
 
 const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, '/frontend/build')));
-app.get('*', (req, res) =>
-  res.sendFile(path.join(__dirname, '/frontend/build/index.html'))
-);
+// app.get('*', (req, res) =>
+//   res.sendFile(path.join(__dirname, '/frontend/build/index.html'))
+// );
+
+app.get('/api/keys/paypal', (req, res) => {
+  res.send(process.env.PAYPAL_CLIENT_ID || 'sb');
+});
 
 app.use((err, req, res, next) => {
   res.status(500).send({ message: err.message });

@@ -9,6 +9,80 @@ import Store from '../models/storeModel.js';
 import ProductCategory from '../models/productCategoryModel.js';
 
 const productRouter = express.Router();
+productRouter.get('/', async (req, res) => {
+  const products = await Product.find();
+  res.send(products);
+});
+productRouter.get(
+  '/productCategory',
+  expressAsyncHandler(async (req, res) => {
+    const productCategory = await Product.find().distinct('productCategory');
+    res.send(productCategory);
+  })
+);
+productRouter.get('/slug/:id', async (req, res) => {
+  const product = await Product.findById(req.params.id);
+  if (product) {
+    res.send(product);
+  } else {
+    res.status(404).send({ message: 'Product Not Found' });
+  }
+});
+
+productRouter.get('/product/:id', async (req, res) => {
+  const product = await Product.findById(req.params.id);
+  if (product) {
+    res.send(product);
+  } else {
+    res.status(404).send({ message: 'Product Not Found' });
+  }
+});
+
+productRouter.get(
+  '/search',
+  expressAsyncHandler(async (req, res) => {
+    const { query } = req;
+    const productCategory = query.category || '';
+    const searchQuery = query.query || '';
+    const price = query.price || '';
+
+    const queryFilter =
+      searchQuery && searchQuery !== 'all'
+        ? {
+            productName: {
+              $regex: searchQuery,
+              $options: 'i',
+            },
+          }
+        : {};
+    const categoryFilter =
+      productCategory && productCategory !== 'all' ? { productCategory } : {};
+    const priceFilter =
+      price && price !== 'all'
+        ? {
+            // 1-50
+            currentPrice: {
+              $gte: Number(price.split('-')[0]),
+              $lte: Number(price.split('-')[1]),
+            },
+          }
+        : {};
+    //console.log(categoryFilter);
+    const products = await Product.find({
+      ...queryFilter,
+      ...categoryFilter,
+      ...priceFilter,
+    });
+    //console.log(products);
+    const countProducts = await Product.countDocuments({
+      ...queryFilter,
+      ...categoryFilter,
+      ...priceFilter,
+    });
+    //console.log(countProducts);
+    res.send({ products, countProducts });
+  })
+);
 
 //User portal > ProductEditScreen.js > Fetch product detail based on product id
 productRouter.get(
@@ -57,6 +131,7 @@ productRouter.post(
       currentPrice: req.body.currentPrice,
       discountedPrice: req.body.discountedPrice,
       isFeatured: req.body.isFeatured,
+      productStatus: req.body.productStatus,
       productCategoryId: req.body.productCategoryId,
       storeId: req.body.storeId,
     });
@@ -74,7 +149,7 @@ productRouter.put(
     const product = await Product.findById(productId);
 
     if (product) {
-      product.productName = req.body.storeName || product.productName;
+      product.productName = req.body.productName || product.productName;
       product.productDescription =
         req.body.productDescription || product.productDescription;
       product.images = req.body.images || product.images;
@@ -86,8 +161,11 @@ productRouter.put(
       product.discountedPrice =
         req.body.discountedPrice || product.discountedPrice;
       product.isFeatured = req.body.isFeatured || product.isFeatured;
+      product.productStatus = req.body.productStatus || product.productStatus;
       product.productCategoryId =
         req.body.productCategoryId || product.productCategoryId;
+      product.productCategory =
+        req.body.productCategory || product.productCategory;
       product.storeId = req.body.storeId || product.storeId;
       const updatedProduct = await product.save();
       res.send(updatedProduct);

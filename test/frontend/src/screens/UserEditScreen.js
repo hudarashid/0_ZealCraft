@@ -133,7 +133,7 @@ export default function UserEditScreen() {
           _id: userId,
           firstName,
           lastName,
-          photo,
+          image,
           email,
           address,
           city,
@@ -195,7 +195,7 @@ export default function UserEditScreen() {
       ) : (
         <Container className="small-container mb-5">
           <Form onSubmit={submitHandler} className="form-custom">
-            <Form.Group className="mb-3" controlId="imageFile">
+            {/* <Form.Group className="mb-3" controlId="imageFile">
               <Form.Label>Upload File</Form.Label>
               <Form.Control
                 type="file"
@@ -210,6 +210,15 @@ export default function UserEditScreen() {
                 src={`/images/${image}`}
                 className="img-thumbnail"
                 alt="hello"
+              />
+            </Form.Group> */}
+            <Form.Group className="mb-3" controlId="photo">
+              <Form.Label className="mr-3">Profile Photo</Form.Label>
+              <img src={image} className="img-thumbnail" alt="hello" />
+              <Form.Control
+                className="mt-3"
+                value={image}
+                onChange={(e) => setImage(e.target.value)}
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="firstName">
@@ -322,7 +331,7 @@ export default function UserEditScreen() {
               {loadingUpdate && <LoadingBox></LoadingBox>}
             </div>
           </Form>
-          <ToastContainer />
+          {/* <ToastContainer /> */}
         </Container>
       )}
     </div>

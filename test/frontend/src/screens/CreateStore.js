@@ -188,7 +188,6 @@ export default function CreateStore() {
             {loading && <LoadingBox></LoadingBox>}
           </div>
         </Form>
-        <ToastContainer />
       </Container>
     </div>
   );

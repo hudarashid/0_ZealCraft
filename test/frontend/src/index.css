@@ -20,6 +20,15 @@ body {
   flex: 1;
 } */
 
+.checkout-steps > div {
+  border-bottom: 0.2rem solid #a0a0a0;
+  color: #a0a0a0;
+}
+.checkout-steps > div.active {
+  border-bottom: 0.2rem solid #1a00db;
+  color: #4900e7;
+}
+
 .users {
   display: flex; /*This is to show products side by side */
   flex-wrap: wrap;
@@ -171,4 +180,8 @@ tr {
   height: 3rem;
   margin-bottom: 3rem;
   text-align: center;
+}
+
+.home-title {
+  color: #a087bd;
 }

@@ -37,7 +37,7 @@ const CustomerDashboard = () => {
 
                 <Button
                   className="btn-primary"
-                  onClick={() => navigate(`/customer/search`)}
+                  onClick={() => navigate(`/search`)}
                 >
                   Shop
                 </Button>
@@ -55,7 +55,7 @@ const CustomerDashboard = () => {
                 </Card.Text>
                 <Button
                   className="btn-primary"
-                  onClick={() => navigate(`/customer/orders`)}
+                  onClick={() => navigate(`/customer/orderhistory`)}
                 >
                   Orders
                 </Button>

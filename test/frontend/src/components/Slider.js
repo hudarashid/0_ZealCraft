@@ -23,8 +23,10 @@ const Title = styled.h1`
 const Slider = () => {
   return (
     <Container>
-      <Title>A SPACE FOR PASSIONATE CRAFT PEOPLE, ARTISTS AND COOKS</Title>
-      <Button href="/allproducts" variant="outline-dark">
+      <Title className="home-title">
+        A SPACE FOR PASSIONATE CRAFTPEOPLE, ARTIST AND COOKS
+      </Title>
+      <Button href="/search" className="btn-primary">
         SHOP NOW
       </Button>
     </Container>

@@ -54,7 +54,7 @@ const Signin = ({ showModal, setShowModal }) => {
     }
   };
 
-  useEffect(() => {}, []);
+  // useEffect(() => {}, []);
 
   return ReactDom.createPortal(
     <>
@@ -105,7 +105,7 @@ const Signin = ({ showModal, setShowModal }) => {
                 onClick={handleCloseModal}
                 style={{ textAlign: 'center', margin: '20px' }}
               >
-                <Link to="/resetPassword">Forgot your password?</Link>
+                <Link to="/forgot-password">Forgot your password?</Link>
               </p>
               <p onClick={handleCloseModal} style={{ textAlign: 'center' }}>
                 Don't have an account yet? <Link to="/register">Register</Link>

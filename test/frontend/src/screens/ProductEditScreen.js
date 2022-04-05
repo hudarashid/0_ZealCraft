@@ -8,6 +8,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
+import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup';
+import ToggleButton from 'react-bootstrap/ToggleButton';
 import { Store } from '../Store';
 import { getError } from '../utils';
 
@@ -72,6 +74,8 @@ export default function ProductEditScreen() {
   const [storeId, setStoreId] = useState('');
   const [categoryName, setCategoryName] = useState('');
   const [storeName, setStoreName] = useState('');
+  const [productStatus, setProductStatus] = useState('');
+  const [productCategory, setProductCategory] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -94,6 +98,8 @@ export default function ProductEditScreen() {
         setStoreId(data.product.storeId);
         setCategoryName(data.category.categoryName);
         setStoreName(data.store.storeName);
+        setProductStatus(data.product.productStatus);
+        setProductCategory(data.category.categoryName);
         dispatch({ type: 'FETCH_SUCCESS', payload: data });
       } catch (err) {
         dispatch({
@@ -128,6 +134,8 @@ export default function ProductEditScreen() {
           isFeatured,
           productCategoryId,
           storeId,
+          productStatus,
+          productCategory,
         },
         {
           headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -195,8 +203,10 @@ export default function ProductEditScreen() {
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="pimage">
-              <Form.Label>Images</Form.Label>
+              <Form.Label className="mr-3">Images</Form.Label>
+              <img src={images} className="img-thumbnail" alt={productName} />
               <Form.Control
+                className="mt-3"
                 value={images}
                 onChange={(e) => setImages(e.target.value)}
               />
@@ -236,17 +246,59 @@ export default function ProductEditScreen() {
                 onChange={(e) => setDiscountedPrice(e.target.value)}
               />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="supportPhone">
+            <Form.Group className="mb-1" controlId="featured">
               <Form.Label>Is Featured</Form.Label>
-              <Form.Control
-                value={isFeatured}
-                onChange={(e) => setIsFeatured(e.target.value)}
-              />
             </Form.Group>
+            <ToggleButtonGroup
+              className="mb-3"
+              type="radio"
+              name="featured"
+              defaultValue={isFeatured}
+              onChange={(value) => setIsFeatured(value)}
+            >
+              {' '}
+              <ToggleButton
+                id="tbg-btn-3"
+                value={true}
+                variant="outline-success"
+              >
+                Yes
+              </ToggleButton>
+              <ToggleButton
+                id="tbg-btn-4"
+                value={false}
+                variant="outline-secondary"
+              >
+                No
+              </ToggleButton>
+            </ToggleButtonGroup>
+            <Form.Group className="mb-1" controlId="status">
+              <Form.Label>Product Status</Form.Label>
+            </Form.Group>
+            <ToggleButtonGroup
+              className="mb-3"
+              type="radio"
+              name="storeStatus"
+              defaultValue={productStatus}
+              onChange={(value) => setProductStatus(value)}
+            >
+              {' '}
+              <ToggleButton
+                id="tbg-btn-1"
+                value={'Active'}
+                variant="outline-success"
+              >
+                Active
+              </ToggleButton>
+              <ToggleButton
+                id="tbg-btn-2"
+                value={'Inactive'}
+                variant="outline-secondary"
+              >
+                Inactive
+              </ToggleButton>
+            </ToggleButtonGroup>
             <Form.Group className="mb-3" controlId="supportPhone">
-              {/* <Form.Label>Product Category</Form.Label>
-            <Form.Control defaultValue={productCategoryId} readonly />
-          </Form.Group> */}
               <Form.Label>Product Category</Form.Label>
               <Form.Control disabled defaultValue={categoryName} />
             </Form.Group>
@@ -280,7 +332,7 @@ export default function ProductEditScreen() {
               {loadingUpdate && <LoadingBox></LoadingBox>}
             </div>
           </Form>
-          <ToastContainer />
+          {/* <ToastContainer /> */}
         </Container>
       )}
     </div>

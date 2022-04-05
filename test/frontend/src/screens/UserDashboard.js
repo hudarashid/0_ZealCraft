@@ -53,7 +53,7 @@ const UserDashboard = () => {
                 <Card.Text>View list of orders.</Card.Text>
                 <Button
                   className="btn-primary"
-                  onClick={() => navigate(`/user/orders`)}
+                  onClick={() => navigate(`/user/orderhistory`)}
                 >
                   Orders
                 </Button>

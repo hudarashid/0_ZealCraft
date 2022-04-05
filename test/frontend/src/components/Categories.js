@@ -2,7 +2,7 @@ import React, { useEffect, useReducer, useState } from 'react';
 import styled from 'styled-components';
 import logger from 'use-reducer-logger';
 import Button from 'react-bootstrap/Button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import LoadingBox from './LoadingBox';
 
@@ -37,18 +37,9 @@ const Info = styled.div`
   justify-content: center;
 `;
 const Title = styled.h1`
-  color: black;
+  color: #3f344a;
   margin-bottom: 20px;
 `;
-// const linkStyle = styled.a`
-//     border: none;
-//     padding: 10px;
-//     background-color: white;
-//     color: gray;
-//     cursor: pointer;
-//     font-weight: 600;
-//     text-decoration: none;
-// `
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -64,6 +55,8 @@ const reducer = (state, action) => {
 };
 
 const Categories = () => {
+  const navigate = useNavigate();
+
   const [{ loading, error, categories }, dispatch] = useReducer(
     logger(reducer),
     {
@@ -73,6 +66,7 @@ const Categories = () => {
     }
   );
 
+  //fetch data from productCategory model
   useEffect(() => {
     const fetchData = async () => {
       dispatch({ type: 'FETCH_REQUEST' });
@@ -98,11 +92,7 @@ const Categories = () => {
             <Image src={category.img} alt={category.categoryName} />
             <Info>
               <Title>{category.categoryName}</Title>
-              <Button
-                href={`/categories/${category._id}`}
-                variant="light"
-                active
-              >
+              <Button href={`/search`} className="btn-primary">
                 SHOP NOW
               </Button>
             </Info>

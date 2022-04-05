@@ -1,26 +1,21 @@
-import axios from 'axios';
 import React, { useContext, useEffect, useReducer } from 'react';
-import Button from 'react-bootstrap/Button';
-import Container from 'react-bootstrap/esm/Container';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
-import LoadingBox from '../components/LoadingBox';
+import axios from 'axios';
 import MessageBox from '../components/MessageBox';
+import LoadingBox from '../components/MessageBox';
 import { Store } from '../Store';
 import { getError } from '../utils';
+import Button from 'react-bootstrap/Button';
+import Container from '../../node_modules/react-bootstrap/esm/Container';
 import Table from 'react-bootstrap/Table';
-import { ToastContainer, toast } from 'react-toastify';
 
 const reducer = (state, action) => {
   switch (action.type) {
     case 'FETCH_REQUEST':
       return { ...state, loading: true };
     case 'FETCH_SUCCESS':
-      return {
-        ...state,
-        users: action.payload,
-        loading: false,
-      };
+      return { ...state, orders: action.payload, loading: false };
     case 'FETCH_FAIL':
       return { ...state, loading: false, error: action.payload };
     default:
@@ -28,30 +23,28 @@ const reducer = (state, action) => {
   }
 };
 
-export default function CustomerListScreen() {
+export default function OrderHistoryScreen() {
   const navigate = useNavigate();
-  const [{ loading, error, users }, dispatch] = useReducer(reducer, {
+  const { state } = useContext(Store);
+  const { userInfo } = state;
+
+  const [{ loading, error, orders }, dispatch] = useReducer(reducer, {
     loading: true,
     error: '',
   });
 
-  const { state } = useContext(Store);
-  const { userInfo } = state;
-
   useEffect(() => {
     const fetchData = async () => {
+      dispatch({ type: 'FETCH_REQUEST' });
       try {
-        dispatch({ type: 'FETCH_REQUEST' });
-        const { data } = await axios.get(
-          `/api/ur/admin/customers`,
-
-          { headers: { Authorization: `Bearer ${userInfo.token}` } }
-        );
+        const { data } = await axios.get(`/api/or/mine`, {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
         dispatch({ type: 'FETCH_SUCCESS', payload: data });
-      } catch (err) {
+      } catch (error) {
         dispatch({
           type: 'FETCH_FAIL',
-          payload: getError(err),
+          payload: getError(error),
         });
       }
     };
@@ -61,10 +54,10 @@ export default function CustomerListScreen() {
   return (
     <div>
       <Helmet>
-        <title>Customers</title>
+        <title>Order History</title>
       </Helmet>
-      <div className="navbar custom-nav">Customers</div>
-      <Container className="medium-container">
+      <Container>
+        <div className="navbar custom-nav">Order History</div>
         {loading ? (
           <LoadingBox></LoadingBox>
         ) : error ? (
@@ -74,24 +67,33 @@ export default function CustomerListScreen() {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>NAME</th>
-                <th>EMAIL</th>
+                <th>DATE</th>
+                <th>TOTAL</th>
+                <th>PAID</th>
+                <th>DELIVERED</th>
+                <th>ACTIONS</th>
               </tr>
             </thead>
             <tbody>
-              {users.map((user) => (
-                <tr key={user._id}>
-                  <td>{user._id}</td>
+              {orders.map((order) => (
+                <tr key={order._id}>
+                  <td>{order._id}</td>
+                  <td>{order.createdAt.substring(0, 10)}</td>
+                  <td>{order.totalPrice.toFixed(2)}</td>
+                  <td>{order.isPaid ? order.paidAt.substring(0, 10) : 'No'}</td>
                   <td>
-                    {user.firstName} {user.lastName}
+                    {order.isDelivered
+                      ? order.deliveredAt.substring(0, 10)
+                      : 'No'}
                   </td>
-                  <td>{user.email}</td>
-                  <td className="vertical-align">
+                  <td>
                     <Button
                       className="btn-primary"
-                      onClick={() => navigate(`/admin/customers/${user._id}`)}
+                      onClick={() => {
+                        navigate(`/order/${order._id}`);
+                      }}
                     >
-                      View
+                      Details
                     </Button>
                   </td>
                 </tr>
@@ -101,11 +103,10 @@ export default function CustomerListScreen() {
         )}
         <Button
           className="btn-cancel pull-right"
-          onClick={() => navigate('/admin/dashboard')}
+          onClick={() => navigate('/customer/dashboard')}
         >
           Back
         </Button>
-        {/* <ToastContainer /> */}
       </Container>
     </div>
   );

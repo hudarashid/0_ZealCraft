@@ -25,6 +25,19 @@ export const generateToken = (user) => {
   );
 };
 
+export const resetPasswordToken = (user) => {
+  return jwt.sign(
+    {
+      _id: user._id,
+      email: user.email,
+    },
+    process.env.JWT_SECRET
+    // {
+    //     expiresIn: '15m',
+    // }
+  );
+};
+
 export const isAuth = (req, res, next) => {
   const authorization = req.headers.authorization;
   if (authorization) {

@@ -132,16 +132,40 @@ export default function CategoryEditScreen() {
                 onChange={(e) => setCategoryDescription(e.target.value)}
               />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="pimage">
+            <Form.Group className="mb-1" controlId="status">
               <Form.Label>Category Status</Form.Label>
-              <Form.Control
-                value={categoryStatus}
-                onChange={(e) => setCategoryStatus(e.target.value)}
-              />
             </Form.Group>
+            <ToggleButtonGroup
+              className="mb-3"
+              type="radio"
+              name="storeStatus"
+              defaultValue={categoryStatus}
+              onChange={(value) => setCategoryStatus(value)}
+            >
+              {' '}
+              <ToggleButton
+                id="tbg-btn-1"
+                value={'Active'}
+                variant="outline-success"
+              >
+                Active
+              </ToggleButton>
+              <ToggleButton
+                id="tbg-btn-2"
+                value={'Inactive'}
+                variant="outline-secondary"
+              >
+                Inactive
+              </ToggleButton>
+            </ToggleButtonGroup>
             <Form.Group className="mb-3" controlId="punit">
               <Form.Label className="mr-3">Image</Form.Label>{' '}
               <img src={img} className="img-thumbnail" alt={categoryName} />
+              <Form.Control
+                className="mt-3"
+                value={img}
+                onChange={(e) => setImg(e.target.value)}
+              />
             </Form.Group>
 
             <div className="mb-3 mr-1" style={{ display: 'flex' }}>
@@ -163,7 +187,6 @@ export default function CategoryEditScreen() {
               {loadingUpdate && <LoadingBox></LoadingBox>}
             </div>
           </Form>
-          <ToastContainer />
         </Container>
       )}
     </div>

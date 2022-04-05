@@ -1,20 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useContext } from 'react';
+import AllProducts from './screens/AllProducts';
+import ProductScreen from './screens/ProductScreen';
+import CartScreen from './screens/CartScreen';
 import { BrowserRouter, Route, Routes, Navigate, Link } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-// import HomeScreen from './Screens/HomeScreen';
+import ShippingAddressScren from './screens/ShippingAddressScreen';
 import AdminRoute from './components/AdminRoute';
-// import CategoryItem from './components/CategoryItem';
+import OrderHistoryScreen from './screens/OrderHistoryScreen';
+import OrderScreen from './screens/OrderScreen';
+import PaymentMethodScreen from './screens/PaymentMethodScreen';
+import PlaceOrderScreen from './screens/PlaceOrderScreen';
 import CustomerProtectedRoute from './components/CustomerProtectedRoute';
 import Navbar from './components/Navbar';
 import SearchBar from './components/SearchBar';
 import Signin from './components/Signin';
 import UserProtectedRoute from './components/UserProtectedRoute';
 import AdminDashboard from './screens/AdminDashboard';
+import ShippingAddressScreen from './screens/ShippingAddressScreen';
+
 import Home from './screens/Home';
 import Register from './screens/Register';
 import ResetPassword from './screens/ResetPassword';
+import SearchProducts from './screens/SearchProducts';
 import Container from 'react-bootstrap/Container';
 import { LinkContainer } from 'react-router-bootstrap';
 import UserListScreen from './screens/UserListScreen';
@@ -33,13 +41,20 @@ import CustomerEditScreen from './screens/CustomerEditScreen';
 import AdminProfileScreen from './screens/AdminProfileScreen';
 import UserProfileScreen from './screens/UserProfileScreen';
 import CustomerProfileScreen from './screens/CustomerProfileScreen';
+import ForgotPassword from './screens/ForgotPassword';
 import CategoryEditScreen from './screens/CategoryEditScreen';
-import OrdersScreen from './screens/OrdersScreen';
+import OrdersScreen from './screens/OrderScreen';
+import { Store } from './Store';
+import CreateCategory from './screens/CreateCategory';
 
 function App() {
+  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const { userInfo } = state;
   return (
     <BrowserRouter>
-      <div className="d-flex flex-column site-container">
+      <ToastContainer position="bottom-center" limit={1} />
+      {/* <div className="d-flex flex-column site-container"> */}
+      <div>
         <header>
           <Navbar />
         </header>
@@ -47,12 +62,20 @@ function App() {
           <div>
             <Container>
               <Routes>
-                <Route path="/" element={<Navigate to="/home" />} />
-                <Route path="/register" element={<Register />} />
+                <Route path="/" element={<Navigate to="/home" />}></Route>
+                <Route path="/register" element={<Register />}></Route>
+                <Route path="/allproducts" element={<AllProducts />} />
+
+                <Route path="/shipping" element={<ShippingAddressScreen />} />
+                <Route path="/payment" element={<PaymentMethodScreen />} />
+                <Route path="/placeorder" element={<PlaceOrderScreen />} />
+                <Route path="/order/:id" element={<OrderScreen />}></Route>
                 <Route path="/signin" element={<Signin />} />
-                {/* <Route path="/categories/:slug" element={<CategoryItem />} /> */}
+                <Route path="/search" element={<SearchProducts />} />
                 <Route path="/searchbar" element={<SearchBar />} />
-                <Route path="/resetPassword" element={<ResetPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+
                 <Route path="/home" element={<Home />} />
                 <Route
                   path="/admin/dashboard"
@@ -99,6 +122,14 @@ function App() {
                   element={
                     <AdminRoute>
                       <CategoriesScreen />
+                    </AdminRoute>
+                  }
+                />
+                <Route
+                  path="/admin/create-category"
+                  element={
+                    <AdminRoute>
+                      <CreateCategory />
                     </AdminRoute>
                   }
                 />
@@ -174,11 +205,19 @@ function App() {
                     </UserProtectedRoute>
                   }
                 />
-                <Route
+                {/* <Route
                   path="/user/orders"
                   element={
                     <UserProtectedRoute>
                       <OrdersScreen />
+                    </UserProtectedRoute>
+                  }
+                /> */}
+                <Route
+                  path="/user/orderhistory"
+                  element={
+                    <UserProtectedRoute>
+                      <OrderHistoryScreen />
                     </UserProtectedRoute>
                   }
                 />
@@ -194,15 +233,28 @@ function App() {
                   path="/customer/dashboard"
                   element={
                     <CustomerProtectedRoute>
-                      <CustomerDashboard />
+                      <CustomerDashboard>
+                        <CartScreen />
+                      </CustomerDashboard>
                     </CustomerProtectedRoute>
                   }
                 />
+
+                <Route path="/customer/cart" element={<CartScreen />} />
+                <Route path="/product/slug/:id" element={<ProductScreen />} />
                 <Route
                   path="/customer/profile"
                   element={
                     <CustomerProtectedRoute>
                       <CustomerProfileScreen />
+                    </CustomerProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/customer/orderhistory"
+                  element={
+                    <CustomerProtectedRoute>
+                      <OrderHistoryScreen />
                     </CustomerProtectedRoute>
                   }
                 />

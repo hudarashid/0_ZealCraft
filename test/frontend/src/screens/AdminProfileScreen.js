@@ -99,7 +99,7 @@ export default function CustomerProfileScreen() {
           _id: userInfo._id,
           firstName,
           lastName,
-          photo,
+          image,
           email,
           address,
           city,
@@ -140,7 +140,7 @@ export default function CustomerProfileScreen() {
       <div className="navbar custom-nav">Edit Profile</div>
       <Container className="small-container mb-5">
         <Form onSubmit={submitHandler}>
-          <Form.Group className="mb-3" controlId="imageFile">
+          {/* <Form.Group className="mb-3" controlId="imageFile">
             <Form.Label>Upload File</Form.Label>
             <Form.Control type="file" filename="image" onChange={photoChange} />
           </Form.Group>
@@ -151,6 +151,15 @@ export default function CustomerProfileScreen() {
               src={`/images/${image}`}
               className="img-thumbnail"
               alt="hello"
+            />
+          </Form.Group> */}
+          <Form.Group className="mb-3" controlId="photo">
+            <Form.Label className="mr-3">Profile Photo</Form.Label>
+            <img src={image} className="img-thumbnail" alt="hello" />
+            <Form.Control
+              className="mt-3"
+              value={image}
+              onChange={(e) => setImage(e.target.value)}
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="firstName">
@@ -253,7 +262,7 @@ export default function CustomerProfileScreen() {
             {loadingUpdate && <LoadingBox></LoadingBox>}
           </div>
         </Form>
-        <ToastContainer />
+        {/* <ToastContainer /> */}
       </Container>
     </div>
   );

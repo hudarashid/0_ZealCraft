@@ -28,6 +28,25 @@ categoryRouter.get(
   })
 );
 
+//Admin portal > Create category
+
+categoryRouter.post(
+  '/create-category',
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const newCategory = new ProductCategory({
+      categoryName: req.body.categoryName,
+      categoryDescription: req.body.categoryDescription,
+      categoryStatus: req.body.categoryStatus,
+      img: req.body.img,
+    });
+
+    const category = await newCategory.save();
+    res.status(201).send({ message: 'New Store Created', category });
+  })
+);
+
 //User portal > CategoryEditScreen.js > Edit category
 categoryRouter.put(
   '/category/:id',

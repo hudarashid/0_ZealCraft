@@ -12,7 +12,6 @@ import SearchBar from './SearchBar';
 
 const Container = styled.div`
   height: 60px;
-  width: 100%;
 `;
 
 const Wrapper = styled.div`
@@ -60,7 +59,7 @@ const MenuItem = styled.div`
 
 const Navbar = () => {
   const { state, dispatch: ctxDispatch } = useContext(Store);
-  const { userInfo } = state;
+  const { cart, userInfo } = state;
 
   const [showModal, setShowModal] = useState(false);
   const handleCloseModal = () => setShowModal(false);
@@ -73,6 +72,8 @@ const Navbar = () => {
   const signoutHandler = () => {
     ctxDispatch({ type: 'USER_SIGNOUT' });
     localStorage.removeItem('userInfo');
+    localStorage.removeItem('shippingAddress');
+    localStorage.removeItem('paymentMethod');
   };
 
   return (
@@ -140,10 +141,10 @@ const Navbar = () => {
                   >
                     <NavDropdown.Item>Dashboard</NavDropdown.Item>
                   </LinkContainer>
-                  <LinkContainer to="/customer/search">
+                  <LinkContainer to="/search">
                     <NavDropdown.Item>Search items</NavDropdown.Item>
                   </LinkContainer>
-                  <LinkContainer to="/customer/orders">
+                  <LinkContainer to="/customer/orderhistory">
                     <NavDropdown.Item>Orders</NavDropdown.Item>
                   </LinkContainer>
                   <LinkContainer to="/customer/profile">
@@ -160,8 +161,16 @@ const Navbar = () => {
                 </NavDropdown>
               </MenuItem>
               <MenuItem>
-                <Badge badgeContent={4} color="primary">
-                  <ShoppingCartOutlined />
+                <Badge
+                  badgeContent={cart.cartItems.reduce(
+                    (a, c) => a + c.quantity,
+                    0
+                  )}
+                  color="primary"
+                >
+                  <Link to="/customer/cart">
+                    <ShoppingCartOutlined />
+                  </Link>
                 </Badge>
               </MenuItem>
             </>
