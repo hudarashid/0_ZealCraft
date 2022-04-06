@@ -144,14 +144,20 @@ export default function CartScreen() {
                   </ListGroup.Item>
                   <ListGroup.Item>
                     <div className="d-grid">
-                      <Button
-                        type="button"
-                        className="btn-primary"
-                        onClick={checkoutHandler}
-                        disabled={cartItems.length === 0}
-                      >
-                        Proceed to Checkout
-                      </Button>
+                      {cartItems.length === 0 ? (
+                        <Button variant="light" disabled>
+                          Proceed to Checkout
+                        </Button>
+                      ) : (
+                        <>
+                          <Button
+                            onClick={checkoutHandler}
+                            className="btn-primary"
+                          >
+                            Proceed to Checkout
+                          </Button>
+                        </>
+                      )}
                     </div>
                   </ListGroup.Item>
                 </ListGroup>
