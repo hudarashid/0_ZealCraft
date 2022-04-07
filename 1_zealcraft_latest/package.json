@@ -1,0 +1,30 @@
+{
+  "name": "zealcraft",
+  "type": "module",
+  "description": "ecommerce site",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {
+    "concurrently": "^7.0.0",
+    "http-server": "^14.1.0",
+    "nodemon": "^2.0.15"
+  },
+  "scripts": {
+    "build": "cd backend && npm install  && cd ../frontend && npm install && npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/c0047537/ZealCraft.git"
+  },
+  "author": "huda, rohan, tayyaba",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/c0047537/ZealCraft/issues"
+  },
+  "homepage": "https://github.com/c0047537/ZealCraft#readme",
+  "dependencies": {
+    "react-fontawesome": "^1.7.1",
+    "react-icons": "^4.3.1"
+  }
+}
