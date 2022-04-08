@@ -5,4 +5,4 @@ create upload router
 add uplaod request in EditProduct and CreateProduct screens
 perform formgroups for image uploads
 create uploadhandler in both the files
-stop and start backend and fronten
+stop and start backend and frontend
