@@ -1,15 +1,15 @@
 import axios from 'axios';
 import React, { useContext, useEffect, useReducer } from 'react';
+import { toast } from 'react-toastify';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/esm/Container';
 import { Helmet } from 'react-helmet-async';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
 import { Store } from '../Store';
-import { getError } from '../utils';
 import Table from 'react-bootstrap/Table';
-import { ToastContainer, toast } from 'react-toastify';
+import { getError } from '../utils';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -18,7 +18,7 @@ const reducer = (state, action) => {
     case 'FETCH_SUCCESS':
       return {
         ...state,
-        products: action.payload,
+        orders: action.payload,
         loading: false,
       };
     case 'FETCH_FAIL':
@@ -27,28 +27,22 @@ const reducer = (state, action) => {
       return state;
   }
 };
-
-export default function ProductListScreen() {
+export default function OrderListScreen() {
   const navigate = useNavigate();
-  const [{ loading, error, products }, dispatch] = useReducer(reducer, {
+  const { state } = useContext(Store);
+  const { userInfo } = state;
+  const [{ loading, error, orders }, dispatch] = useReducer(reducer, {
     loading: true,
     error: '',
   });
-
-  const { state } = useContext(Store);
-  const { userInfo } = state;
-  const params = useParams();
-  const { id: storeId } = params;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         dispatch({ type: 'FETCH_REQUEST' });
-        const { data } = await axios.get(
-          `/api/pr/${storeId}/products`,
-
-          { headers: { Authorization: `Bearer ${userInfo.token}` } }
-        );
+        const { data } = await axios.get(`/api/or/orders`, {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
         dispatch({ type: 'FETCH_SUCCESS', payload: data });
       } catch (err) {
         dispatch({
@@ -57,24 +51,16 @@ export default function ProductListScreen() {
         });
       }
     };
+
     fetchData();
-  }, [userInfo, storeId]);
+  }, [userInfo]);
 
   return (
     <div>
       <Helmet>
-        <title>Products</title>
+        <title>Orders</title>
       </Helmet>
-      <div className="navbar custom-nav">Products</div>
-      <div style={{ display: 'flex' }}>
-        <Button
-          style={{ marginLeft: 'auto' }}
-          className="btn-primary mb-2"
-          onClick={() => navigate(`/user/create-product`)}
-        >
-          Create Product
-        </Button>
-      </div>
+      <div className="navbar custom-nav">Orders</div>
       <Container className="medium-container">
         {loading ? (
           <LoadingBox></LoadingBox>
@@ -84,21 +70,34 @@ export default function ProductListScreen() {
           <Table borderless className="table-custom">
             <thead>
               <tr>
-                <th>NAME</th>
-                <th>DETAIL</th>
-                <th>Price</th>
+                <th>CUSTOMER</th>
+                <th>DATE</th>
+                <th>TOTAL</th>
+                <th>PAID</th>
+                <th>DELIVERED</th>
               </tr>
             </thead>
             <tbody>
-              {products.map((product) => (
-                <tr key={product._id}>
-                  <td>{product.productName}</td>
-                  <td>{product.productDescription}</td>
-                  <td>{product.currentPrice}</td>
+              {orders.map((order) => (
+                <tr key={order._id}>
+                  <td>
+                    {order.customer ? order.customer.firstName : 'DELETED USER'}
+                  </td>
+                  <td>{order.createdAt.substring(0, 10)}</td>
+                  <td>{order.totalPrice.toFixed(2)}</td>
+                  <td>{order.isPaid ? order.paidAt.substring(0, 10) : 'No'}</td>
+
+                  <td>
+                    {order.isDelivered
+                      ? order.deliveredAt.substring(0, 10)
+                      : 'No'}
+                  </td>
                   <td>
                     <Button
                       className="btn-primary"
-                      onClick={() => navigate(`/user/products/${product._id}`)}
+                      onClick={() => {
+                        navigate(`/orders/${order._id}`);
+                      }}
                     >
                       View
                     </Button>
@@ -110,12 +109,11 @@ export default function ProductListScreen() {
         )}
         <Button
           className="btn-cancel pull-right"
-          onClick={() => navigate('/user/stores')}
+          onClick={() => navigate('/user/dashboard')}
         >
           Back
         </Button>
       </Container>
-      {/* <ToastContainer /> */}
     </div>
   );
 }

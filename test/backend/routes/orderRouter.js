@@ -5,6 +5,15 @@ import { isAuth } from '../utils.js';
 
 const orderRouter = express.Router();
 
+orderRouter.get(
+  '/orders',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const orders = await Order.find().populate('customer', 'firstName');
+    res.send(orders);
+  })
+);
+
 orderRouter.post(
   '/',
   isAuth,
@@ -45,6 +54,23 @@ orderRouter.get(
     }
   })
 );
+orderRouter.put(
+  '/:id',
+  isAuth,
+  expressAsyncHandler(async (req, res) => {
+    const order = await Order.findById(req.params.id);
+    if (order) {
+      order.isDelivered = req.body.isDelivered || order.isDelivered;
+      // if (order.body.isDelivered === true) {
+      //   order.deliveredAt = Date.now();
+      // }
+      const updatedOrder = await order.save();
+      res.send({ message: 'Order Updated', order: updatedOrder });
+    } else {
+      res.status(404).send({ message: 'Order Not Found' });
+    }
+  })
+);
 
 orderRouter.put(
   '/:id/pay',
@@ -68,13 +94,18 @@ orderRouter.put(
   })
 );
 
-orderRouter.get(
-  '/userorders',
-  isAuth,
-  expressAsyncHandler(async (req, res) => {
-    const orders = await Order.find({ userId: req.user._id });
-    res.send(orders);
-  })
-);
+// orderRouter.get(
+//   '/userorders',
+//   isAuth,
+//   expressAsyncHandler(async (req, res) => {
+//     const orders = await Order.find({ userId: req.user._id });
+//     res.send(orders);
+//   })
+// );
+
+// orderRouter.get('/orders', async (req, res) => {
+//   const orders = await Order.find();
+//   res.send(orders);
+// });
 
 export default orderRouter;

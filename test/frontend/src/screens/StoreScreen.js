@@ -73,7 +73,7 @@ export default function StoreScreen() {
           Create Store
         </Button>
       </div>
-      <Container className="large-container">
+      <Container className="medium-container">
         {loading ? (
           <LoadingBox></LoadingBox>
         ) : error ? (
@@ -82,7 +82,6 @@ export default function StoreScreen() {
           <Table borderless className="table-custom">
             <thead>
               <tr>
-                <th>ID</th>
                 <th>NAME</th>
                 <th>DETAIL</th>
                 <th>RATING</th>
@@ -92,7 +91,6 @@ export default function StoreScreen() {
             <tbody>
               {stores.map((store) => (
                 <tr key={store._id}>
-                  <td>{store._id}</td>
                   <td>{store.storeName}</td>
                   <td>{store.storeDetail}</td>
                   <td>{store.storeRating}</td>
@@ -124,7 +122,6 @@ export default function StoreScreen() {
         >
           Back
         </Button>
-        {/* <ToastContainer /> */}
       </Container>
     </div>
   );
