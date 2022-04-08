@@ -73,19 +73,19 @@ export default function UserListScreen() {
           <Table borderless className="table-custom">
             <thead>
               <tr>
-                <th>ID</th>
                 <th>NAME</th>
                 <th>EMAIL</th>
+                <th>COUNTRY</th>
               </tr>
             </thead>
             <tbody>
               {users.map((user) => (
                 <tr key={user._id}>
-                  <td>{user._id}</td>
                   <td>
                     {user.firstName} {user.lastName}
                   </td>
                   <td>{user.email}</td>
+                  <td>{user.country}</td>
                   <td className="vertical-align">
                     <Button
                       className="btn-primary"

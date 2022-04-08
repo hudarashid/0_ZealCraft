@@ -82,7 +82,6 @@ export default function CategoriesScreen() {
           <Table borderless className="table-custom">
             <thead>
               <tr>
-                <th>ID</th>
                 <th>NAME</th>
                 <th>DESCRIPTION</th>
                 <th>Status</th>
@@ -91,7 +90,6 @@ export default function CategoriesScreen() {
             <tbody>
               {categories.map((category) => (
                 <tr key={category._id}>
-                  <td>{category._id}</td>
                   <td>{category.categoryName}</td>
                   <td>{category.categoryDescription}</td>
                   <td>{category.categoryStatus}</td>
