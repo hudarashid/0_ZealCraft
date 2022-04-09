@@ -29,19 +29,55 @@ body {
   
   .user img {
     width: 100%;
-    /*max-width: 100px;*/
+    /*max-width: 100px;*/    
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    -webkit-transition: .3s ease-in-out;
+    transition: .3s ease-in-out;
   }
-  
+  .user img:hover{
+    -webkit-transform: scale(1.3);
+    transform: scale(1.3);
+  }
   .user-info {
     padding: 1rem;
   }
   
   .img-large {
     max-width: 100%;
+    position: relative;
+  }
+  .img-large::before {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 2;
+    display: block;
+    content: '';
+    width: 0;
+    height: 0;
+    background: rgba(255,255,255,.2);
+    border-radius: 100%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    opacity: 0;
+  }
+  .img-large:hover::before {
+    -webkit-animation: circle .75s;
+    animation: circle .75s;
   }
   
   .img-thumbnail {
-    height: 80px;
+    height: 80px;    
+    margin: 5px;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    -webkit-transition: .3s ease-in-out;
+    transition: .3s ease-in-out;
+  }
+  .img-thumbnail:hover{
+    -webkit-transform: scale(1.3);
+    transform: scale(1.3);
   }
   
   .small-container {
@@ -209,7 +245,6 @@ body {
     -webkit-transition: .3s ease-in-out;
     transition: .3s ease-in-out;
   }
-
   .logo:hover{  
     -webkit-transform: scale(1.3);
     transform: scale(1.3);  opacity: 0.6;
@@ -290,7 +325,15 @@ body {
   
   .category-title {
     color: #3f344a;
-    margin-bottom: 20px;
+    margin-bottom: 20px;    
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    -webkit-transition: .3s ease-in-out;
+    transition: .3s ease-in-out;
+  }
+  .category-title:hover{  
+    -webkit-transform: scale(1.8);
+    transform: scale(1.8);  opacity: 1;
   }
   
   /* footer */
@@ -324,7 +367,6 @@ body {
     -webkit-transition: .3s ease-in-out;
     transition: .3s ease-in-out;
   }
-
   .img-thumbnail:hover{
     -webkit-transform: scale(1.3);
     transform: scale(1.3);
@@ -393,18 +435,6 @@ body {
     transform: scale(1.3);
     }
 
-    /*product screen*/
-    .img-large{      
-      -webkit-transform: scale(1);
-      transform: scale(1);
-      -webkit-transition: .3s ease-in-out;
-      transition: .3s ease-in-out;
-    }
-    .img-large:hover{          
-      -webkit-transform: scale(1.3);
-      transform: scale(1.3);
-    }
-  
     /* search-product menu */
     .search-menu {
       text-align: center;
@@ -414,5 +444,4 @@ body {
       margin-left: 0;
       color: #69587c;
     }
-  }
-  
+  }  
