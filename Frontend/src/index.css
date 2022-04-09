@@ -45,6 +45,7 @@ body {
   
   .img-large {
     max-width: 100%;
+    border-radius: 10px;
     position: relative;
   }
   .img-large::before {
@@ -70,6 +71,7 @@ body {
   .img-thumbnail {
     height: 80px;    
     margin: 5px;
+    border-radius: 10px;
     -webkit-transform: scale(1);
     transform: scale(1);
     -webkit-transition: .3s ease-in-out;
