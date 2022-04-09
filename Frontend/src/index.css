@@ -99,10 +99,18 @@ body {
     border-color: #79589f;
     border: 3px solid-transparent;
     color: #fff;
-    font-weight: 500;
+    font-weight: 500;    
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    -webkit-transition: .3s ease-in-out;
+    transition: .3s ease-in-out;
+  }  
+  .btn-primary:hover {
+    background-color: #79589f;
+    border-color: #79589f;
+    -webkit-transform: scale(1.3);
+    transform: scale(1.3);  opacity:1;
   }
-  
-  .btn-primary:hover,
   .btn-primary:focus,
   .btn-primary:active,
   .btn-primary.active {
