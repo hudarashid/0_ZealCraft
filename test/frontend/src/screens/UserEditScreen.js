@@ -19,12 +19,7 @@ const reducer = (state, action) => {
       return { ...state, user: action.payload, loading: false };
     case 'FETCH_FAIL':
       return { ...state, loading: false, error: action.payload };
-    case 'UPDATE_REQUEST':
-      return { ...state, loadingUpdate: true };
-    case 'UPDATE_SUCCESS':
-      return { ...state, loadingUpdate: false };
-    case 'UPDATE_FAIL':
-      return { ...state, loadingUpdate: false };
+
     case 'DELETE_REQUEST':
       return { ...state, loadingDelete: true, successDelete: false };
     case 'DELETE_SUCCESS':
@@ -43,14 +38,11 @@ const reducer = (state, action) => {
 };
 
 export default function UserEditScreen() {
-  const [
-    { loading, error, loadingUpdate, loadingDelete, successDelete },
-    dispatch,
-  ] = useReducer(reducer, {
-    loading: true,
-    error: '',
-    loadingUpdate: false,
-  });
+  const [{ loading, error, loadingDelete, successDelete }, dispatch] =
+    useReducer(reducer, {
+      loading: true,
+      error: '',
+    });
 
   const { state } = useContext(Store);
   const { userInfo } = state;
@@ -119,49 +111,6 @@ export default function UserEditScreen() {
     role = 'User';
   }
 
-  const photoChange = (e) => {
-    setPhoto(e.target.files[0]);
-  };
-
-  const submitHandler = async (e) => {
-    e.preventDefault();
-    try {
-      dispatch({ type: 'UPDATE_REQUEST' });
-      const { data } = await axios.put(
-        `/api/ur/admin/${userId}`,
-        {
-          _id: userId,
-          firstName,
-          lastName,
-          image,
-          email,
-          address,
-          city,
-          postalCode,
-          country,
-          phone,
-          isAdmin,
-          isCustomer,
-          isUser,
-        },
-        {
-          headers: { Authorization: `Bearer ${userInfo.token}` },
-        }
-      );
-      dispatch({
-        type: 'UPDATE_SUCCESS',
-        payload: data,
-      });
-      toast.success('User updated successfully');
-      setTimeout(() => {
-        navigate('/admin/users');
-      }, 3000);
-    } catch (error) {
-      toast.error(getError(error));
-      dispatch({ type: 'UPDATE_FAIL' });
-    }
-  };
-
   const deleteHandler = async (user) => {
     if (window.confirm('Are you sure to delete?')) {
       try {
@@ -187,151 +136,76 @@ export default function UserEditScreen() {
         <title>User Profile</title>
       </Helmet>
       <div className="navbar custom-nav">User Profile: {firstName}</div>
-      {loadingDelete && <LoadingBox></LoadingBox>}
+
       {loading ? (
         <LoadingBox></LoadingBox>
       ) : error ? (
         <MessageBox variant="danger">{error}</MessageBox>
       ) : (
         <Container className="small-container mb-5">
-          <Form onSubmit={submitHandler} className="form-custom">
-            {/* <Form.Group className="mb-3" controlId="imageFile">
-              <Form.Label>Upload File</Form.Label>
-              <Form.Control
-                type="file"
-                filename="image"
-                onChange={photoChange}
-              />
-            </Form.Group>
-            <Form.Group controlId="formFile" className="mb-3">
-              <Form.Label>Profile Photo</Form.Label>
-              <br />
-              <img
-                src={`/images/${image}`}
-                className="img-thumbnail"
-                alt="hello"
-              />
-            </Form.Group> */}
+          <Form className="form-custom">
             <Form.Group className="mb-3" controlId="photo">
               <Form.Label className="mr-3">Profile Photo</Form.Label>
               <img src={image} className="img-thumbnail" alt="hello" />
-              <Form.Control
-                className="mt-3"
-                value={image}
-                onChange={(e) => setImage(e.target.value)}
-              />
             </Form.Group>
             <Form.Group className="mb-3" controlId="firstName">
               <Form.Label>First Name</Form.Label>
-              <Form.Control
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                required
-              />
+              <Form.Control value={firstName} readOnly />
             </Form.Group>
             <Form.Group className="mb-3" controlId="lastName">
               <Form.Label>Last Name</Form.Label>
-              <Form.Control
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                required
-              />
+              <Form.Control value={lastName} readOnly />
             </Form.Group>
             <Form.Group className="mb-3" controlId="email">
               <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
+              <Form.Control type="email" value={email} readOnly />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="password">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="password">
-              <Form.Label>Confirm Password</Form.Label>
-              <Form.Control
-                type="password"
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />{' '}
-            </Form.Group>
+
             <Form.Group className="mb-3" controlId="address">
               <Form.Label>Address</Form.Label>
-              <Form.Control
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                required
-              />
+              <Form.Control value={address} readOnly />
             </Form.Group>
             <Form.Group className="mb-3" controlId="city">
               <Form.Label>City</Form.Label>
-              <Form.Control
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-                required
-              />
+              <Form.Control value={city} readOnly />
             </Form.Group>
             <Form.Group className="mb-3" controlId="postalCode">
               <Form.Label>Postal Code</Form.Label>
-              <Form.Control
-                value={postalCode}
-                onChange={(e) => setPostalCode(e.target.value)}
-                required
-              />
+              <Form.Control value={postalCode} readOnly />
             </Form.Group>
             <Form.Group className="mb-3" controlId="country">
               <Form.Label>Country</Form.Label>
-              <Form.Control
-                value={country}
-                onChange={(e) => setCountry(e.target.value)}
-                required
-              />
+              <Form.Control value={country} readOnly />
             </Form.Group>
             <Form.Group className="mb-3" controlId="phone">
               <Form.Label>Phone</Form.Label>
-              <Form.Control
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                required
-              />
+              <Form.Control value={phone} readOnly />
             </Form.Group>
             <Form.Group className="mb-3" controlId="role">
               <Form.Label>Role</Form.Label>
-              <Form.Control value={role} readonly />
+              <Form.Control value={role} plaintext readonly />
             </Form.Group>
-            <div className="mb-3 mr-1" style={{ display: 'flex' }}>
-              {/* &nbsp; */}
+            <div className="mb-3" style={{ display: 'flex' }}>
+              <Button
+                className="btn-cancel"
+                type="buttton"
+                style={{ marginRight: 'auto' }}
+                onClick={() => navigate(`/admin/users`)}
+              >
+                Cancel
+              </Button>
               <Button
                 className="btn-delete"
                 type="button"
-                style={{ marginRight: 'auto' }}
+                style={{ marginLeft: 'auto' }}
                 variant="danger"
                 onClick={() => deleteHandler(user)}
               >
                 Delete
               </Button>
-              <Button
-                className="btn-cancel"
-                type="buttton"
-                style={{ marginLeft: 'auto' }}
-                onClick={() => navigate(`/admin/users`)}
-              >
-                Cancel
-              </Button>
-              {'  '}
-              {'  '}
-              <Button type="submit" className="btn-space btn-primary">
-                Update
-              </Button>
-              {loadingUpdate && <LoadingBox></LoadingBox>}
             </div>
           </Form>
-          {/* <ToastContainer /> */}
+          {loadingDelete && <LoadingBox></LoadingBox>}
         </Container>
       )}
     </div>

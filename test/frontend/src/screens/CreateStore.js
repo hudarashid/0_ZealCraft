@@ -20,6 +20,22 @@ const reducer = (state, action) => {
       return { ...state, loading: false };
     case 'CREATE_FAIL':
       return { ...state, loading: false };
+    case 'UPLOAD_REQUEST':
+      return { ...state, loadingUpload: true, errorUpload: '' };
+    case 'UPLOAD_SUCCESS':
+      return {
+        ...state,
+        loadingUpload: false,
+        loadingUpload1: false,
+        errorUpload: '',
+      };
+    case 'UPLOAD_FAIL':
+      return {
+        ...state,
+        loadingUpload: false,
+        loadingUpload1: false,
+        errorUpload: action.payload,
+      };
     default:
       return state;
   }
@@ -28,11 +44,14 @@ const reducer = (state, action) => {
 export default function CreateStore() {
   const navigate = useNavigate();
 
-  const [{ loading }, dispatch] = useReducer(reducer, {
-    loading: false,
-  });
+  const [{ loading, loadingUpload, loadingUpload1 }, dispatch] = useReducer(
+    reducer,
+    {
+      loading: false,
+    }
+  );
 
-  const { state, dispatch: ctxDispatch } = useContext(Store);
+  const { state } = useContext(Store);
   const { userInfo } = state;
 
   const [storeName, setStoreName] = useState('');
@@ -44,13 +63,6 @@ export default function CreateStore() {
   const [storeStatus, setStoreStatus] = useState('Active');
   const [supportPhone, setSupportPhone] = useState('');
   const [userId, setUserId] = useState('');
-
-  //   const [radioValue, setRadioValue] = useState('Active');
-
-  //   const radios = [
-  //     { name: 'Active', value: 'Active' },
-  //     { name: 'Inactive', value: 'Inactive' },
-  //   ];
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -85,6 +97,47 @@ export default function CreateStore() {
       toast.error(getError(err));
     }
   };
+  const uploadFileHandler = async (e) => {
+    const file = e.target.files[0];
+    const bodyFormData = new FormData();
+    bodyFormData.append('file', file);
+    try {
+      dispatch({ type: 'UPLOAD_REQUEST' });
+      const { data } = await axios.post('/api/upr', bodyFormData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      });
+      dispatch({ type: 'UPLOAD_SUCCESS' });
+      toast.success('Image uploaded successfully');
+      setBannerImage(data.secure_url);
+    } catch (err) {
+      toast.error(getError(err));
+      dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) });
+    }
+  };
+
+  const uploadFileHandler1 = async (e) => {
+    const file = e.target.files[0];
+    const bodyFormData = new FormData();
+    bodyFormData.append('file', file);
+    try {
+      dispatch({ type: 'UPLOAD_REQUEST' });
+      const { data } = await axios.post('/api/upr', bodyFormData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      });
+      dispatch({ type: 'UPLOAD_SUCCESS' });
+      toast.success('Image uploaded successfully');
+      setAdditionalPhoto(data.secure_url);
+    } catch (err) {
+      toast.error(getError(err));
+      dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) });
+    }
+  };
 
   return (
     <div>
@@ -108,23 +161,33 @@ export default function CreateStore() {
               onChange={(e) => setStoreDetail(e.target.value)}
             />
           </Form.Group>
-          <Form.Group className="mb-3" controlId="bannerImage">
-            <Form.Label>Banner Image</Form.Label>
+          <Form.Group className="mb-3" controlId="pimage">
+            <Form.Label className="mr-3">Banner Image</Form.Label>
+            <img src={bannerImage} className="img-thumbnail" alt="" />
             <Form.Control
-              placeholder="Banner Image"
-              value={'Banner-Image'}
-              readOnly
+              className="mt-3"
+              value={bannerImage}
               onChange={(e) => setBannerImage(e.target.value)}
             />
           </Form.Group>
-          <Form.Group className="mb-3" controlId="additionalPhoto">
-            <Form.Label>Additional Photo</Form.Label>
+          <Form.Group className="mb-3" controlId="imageFile">
+            <Form.Label>Upload Image</Form.Label>
+            <Form.Control type="file" onChange={uploadFileHandler} />
+            {loadingUpload && <LoadingBox></LoadingBox>}
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="pimage">
+            <Form.Label className="mr-3">Additional Photo</Form.Label>
+            <img src={additionalPhoto} className="img-thumbnail" alt="" />
             <Form.Control
-              placeholder="Additional Photo"
-              value={'Additional-Photo'}
-              readOnly
+              className="mt-3"
+              value={additionalPhoto}
               onChange={(e) => setAdditionalPhoto(e.target.value)}
             />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="imageFile">
+            <Form.Label>Upload Image</Form.Label>
+            <Form.Control type="file" onChange={uploadFileHandler1} />
+            {loadingUpload1 && <LoadingBox></LoadingBox>}
           </Form.Group>
           <Form.Group className="mb-3" controlId="supportEmail">
             <Form.Label>Support Email</Form.Label>

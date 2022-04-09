@@ -21,6 +21,16 @@ const reducer = (state, action) => {
       return { ...state, loading: false };
     case 'CREATE_FAIL':
       return { ...state, loading: false };
+    case 'UPLOAD_REQUEST':
+      return { ...state, loadingUpload: true, errorUpload: '' };
+    case 'UPLOAD_SUCCESS':
+      return {
+        ...state,
+        loadingUpload: false,
+        errorUpload: '',
+      };
+    case 'UPLOAD_FAIL':
+      return { ...state, loadingUpload: false, errorUpload: action.payload };
     default:
       return state;
   }
@@ -28,7 +38,7 @@ const reducer = (state, action) => {
 
 export default function CreateCategory() {
   const navigate = useNavigate();
-  const [{ loading }, dispatch] = useReducer(reducer, {
+  const [{ loading, loadingUpload }, dispatch] = useReducer(reducer, {
     loading: false,
   });
 
@@ -66,7 +76,26 @@ export default function CreateCategory() {
       toast.error(getError(err));
     }
   };
-
+  const uploadFileHandler = async (e) => {
+    const file = e.target.files[0];
+    const bodyFormData = new FormData();
+    bodyFormData.append('file', file);
+    try {
+      dispatch({ type: 'UPLOAD_REQUEST' });
+      const { data } = await axios.post('/api/upr', bodyFormData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      });
+      dispatch({ type: 'UPLOAD_SUCCESS' });
+      toast.success('Image uploaded successfully');
+      setImg(data.secure_url);
+    } catch (err) {
+      toast.error(getError(err));
+      dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) });
+    }
+  };
   return (
     <div>
       <Helmet>
@@ -83,6 +112,11 @@ export default function CreateCategory() {
               value={img}
               onChange={(e) => setImg(e.target.value)}
             />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="imageFile">
+            <Form.Label>Upload Image</Form.Label>
+            <Form.Control type="file" onChange={uploadFileHandler} />
+            {loadingUpload && <LoadingBox></LoadingBox>}
           </Form.Group>
           <Form.Group className="mb-3" controlId="pname">
             <Form.Label>Category Name</Form.Label>

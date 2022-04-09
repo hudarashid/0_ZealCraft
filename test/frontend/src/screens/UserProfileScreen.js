@@ -25,20 +25,28 @@ const reducer = (state, action) => {
       return { ...state, loadingUpdate: false };
     case 'UPDATE_FAIL':
       return { ...state, loadingUpdate: false };
+    case 'UPLOAD_REQUEST':
+      return { ...state, loadingUpload: true, errorUpload: '' };
+    case 'UPLOAD_SUCCESS':
+      return {
+        ...state,
+        loadingUpload: false,
+        errorUpload: '',
+      };
+    case 'UPLOAD_FAIL':
+      return { ...state, loadingUpload: false, errorUpload: action.payload };
     default:
       return state;
   }
 };
 
 export default function UserProfileScreen() {
-  const [{ loading, error, user, loadingUpdate }, dispatch] = useReducer(
-    reducer,
-    {
+  const [{ loading, error, user, loadingUpdate, loadingUpload }, dispatch] =
+    useReducer(reducer, {
       loading: true,
       error: '',
       loadingUpdate: false,
-    }
-  );
+    });
   const role = 'User';
 
   const { state } = useContext(Store);
@@ -60,10 +68,6 @@ export default function UserProfileScreen() {
   const [isAdmin, setIsAdmin] = useState('');
   const [isCustomer, setIsCustomer] = useState('');
   const [isUser, setIsUser] = useState('');
-
-  // const photoChange = (e) => {
-  //   setPhoto(e.target.files[0]);
-  // };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -118,7 +122,6 @@ export default function UserProfileScreen() {
         },
         {
           headers: {
-            // 'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${userInfo.token}`,
           },
         }
@@ -137,7 +140,26 @@ export default function UserProfileScreen() {
       toast.error(getError(error));
     }
   };
-
+  const uploadFileHandler = async (e) => {
+    const file = e.target.files[0];
+    const bodyFormData = new FormData();
+    bodyFormData.append('file', file);
+    try {
+      dispatch({ type: 'UPLOAD_REQUEST' });
+      const { data } = await axios.post('/api/upr', bodyFormData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      });
+      dispatch({ type: 'UPLOAD_SUCCESS' });
+      toast.success('Image uploaded successfully');
+      setImage(data.secure_url);
+    } catch (err) {
+      toast.error(getError(err));
+      dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) });
+    }
+  };
   return (
     <div>
       <Helmet>
@@ -146,19 +168,6 @@ export default function UserProfileScreen() {
       <div className="navbar custom-nav">Edit Profile</div>
       <Container className="small-container mb-5">
         <Form onSubmit={submitHandler}>
-          {/* <Form.Group className="mb-3" controlId="imageFile">
-            <Form.Label>Upload File</Form.Label>
-            <Form.Control type="file" filename="image" onChange={photoChange} />
-          </Form.Group> */}
-          {/* <Form.Group controlId="formFile" className="mb-3">
-            <Form.Label>Profile Photo</Form.Label>
-            <br />
-            <img
-              src={`/images/${image}`}
-              className="img-thumbnail"
-              alt="hello"
-            />
-          </Form.Group> */}
           <Form.Group className="mb-3" controlId="photo">
             <Form.Label className="mr-3">Profile Photo</Form.Label>
             <img src={image} className="img-thumbnail" alt="hello" />
@@ -167,6 +176,11 @@ export default function UserProfileScreen() {
               value={image}
               onChange={(e) => setImage(e.target.value)}
             />
+          </Form.Group>
+          <Form.Group className="mb-3" controlId="imageFile">
+            <Form.Label>Upload Image</Form.Label>
+            <Form.Control type="file" onChange={uploadFileHandler} />
+            {loadingUpload && <LoadingBox></LoadingBox>}
           </Form.Group>
           <Form.Group className="mb-3" controlId="firstName">
             <Form.Label>First Name</Form.Label>

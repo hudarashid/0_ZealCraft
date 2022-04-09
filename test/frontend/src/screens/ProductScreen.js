@@ -162,15 +162,6 @@ const ProductScreen = () => {
                   </Row>
                 </ListGroup.Item>
 
-                {/* {product.quantityOnHand > 0 && (
-                  <ListGroup.Item>
-                    <div className="d-grid">
-                      <Button onClick={addToCartHandler} variant="warning">
-                        Add to Cart
-                      </Button>
-                    </div>
-                  </ListGroup.Item>
-                )} */}
                 {product.quantityOnHand === 0 ? (
                   <Button variant="light" disabled>
                     Out of stock

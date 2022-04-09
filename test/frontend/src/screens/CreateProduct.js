@@ -31,6 +31,16 @@ const reducer = (state, action) => {
       return { ...state, loading: false };
     case 'CREATE_FAIL':
       return { ...state, loading: false };
+    case 'UPLOAD_REQUEST':
+      return { ...state, loadingUpload: true, errorUpload: '' };
+    case 'UPLOAD_SUCCESS':
+      return {
+        ...state,
+        loadingUpload: false,
+        errorUpload: '',
+      };
+    case 'UPLOAD_FAIL':
+      return { ...state, loadingUpload: false, errorUpload: action.payload };
     default:
       return state;
   }
@@ -38,10 +48,13 @@ const reducer = (state, action) => {
 
 export default function CreateProduct() {
   const navigate = useNavigate();
-  const [{ loading, error, summary }, dispatch] = useReducer(reducer, {
-    loading: true,
-    error: '',
-  });
+  const [{ loading, error, summary, loadingUpload }, dispatch] = useReducer(
+    reducer,
+    {
+      loading: true,
+      error: '',
+    }
+  );
 
   const { state } = useContext(Store);
   const { userInfo } = state;
@@ -56,7 +69,7 @@ export default function CreateProduct() {
   const [discountedPrice, setDiscountedPrice] = useState('');
   const [isFeatured, setIsFeatured] = useState('');
   const [productStatus, setProductStatus] = useState('');
-
+  const [uploading, setUploading] = useState('');
   const [storeId, setStoreId] = useState('');
   const [productCategoryId, setProductCategoryId] = useState('');
 
@@ -127,6 +140,26 @@ export default function CreateProduct() {
     }
   };
 
+  const uploadFileHandler = async (e) => {
+    const file = e.target.files[0];
+    const bodyFormData = new FormData();
+    bodyFormData.append('file', file);
+    try {
+      dispatch({ type: 'UPLOAD_REQUEST' });
+      const { data } = await axios.post('/api/upr', bodyFormData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      });
+      dispatch({ type: 'UPLOAD_SUCCESS' });
+      toast.success('Image uploaded successfully');
+      setImages(data.secure_url);
+    } catch (err) {
+      toast.error(getError(err));
+      dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) });
+    }
+  };
   return (
     <div>
       <Helmet>
@@ -148,6 +181,11 @@ export default function CreateProduct() {
                 value={images}
                 onChange={(e) => setImages(e.target.value)}
               />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="imageFile">
+              <Form.Label>Upload Image</Form.Label>
+              <Form.Control type="file" onChange={uploadFileHandler} />
+              {loadingUpload && <LoadingBox></LoadingBox>}
             </Form.Group>
             <Form.Group className="mb-3" controlId="pname">
               <Form.Label>Product Name</Form.Label>
@@ -300,10 +338,6 @@ export default function CreateProduct() {
                 ))}
               </Form.Select>
             </Form.Group>
-            {/* <Form.Group className="mb-3" controlId="supportPhone">
-              <Form.Label>Selected Category Name</Form.Label>
-              <Form.Control value={productCategory} readonly />
-            </Form.Group> */}
             <div className="mb-3 mt-2" style={{ display: 'flex' }}>
               <Button
                 className="btn-cancel"

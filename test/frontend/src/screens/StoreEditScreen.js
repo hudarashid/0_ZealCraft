@@ -27,13 +27,32 @@ const reducer = (state, action) => {
       return { ...state, loadingUpdate: false };
     case 'UPDATE_FAIL':
       return { ...state, loadingUpdate: false };
+    case 'UPLOAD_REQUEST':
+      return { ...state, loadingUpload: true, errorUpload: '' };
+    case 'UPLOAD_SUCCESS':
+      return {
+        ...state,
+        loadingUpload: false,
+        loadingUpload1: false,
+        errorUpload: '',
+      };
+    case 'UPLOAD_FAIL':
+      return {
+        ...state,
+        loadingUpload: false,
+        loadingUpload1: false,
+        errorUpload: action.payload,
+      };
     default:
       return state;
   }
 };
 
 export default function UserEditScreen() {
-  const [{ loading, error, loadingUpdate }, dispatch] = useReducer(reducer, {
+  const [
+    { loading, error, loadingUpdate, loadingUpload, loadingUpload1 },
+    dispatch,
+  ] = useReducer(reducer, {
     loading: true,
     error: '',
     loadingUpdate: false,
@@ -86,17 +105,6 @@ export default function UserEditScreen() {
     e.preventDefault();
     try {
       dispatch({ type: 'UPDATE_REQUEST' });
-      // const bodyFormData = new FormData();
-      // bodyFormData.append('_id', storeId);
-      // bodyFormData.append('storeName', storeName);
-      // bodyFormData.append('storeDetail', storeDetail);
-      // bodyFormData.append('bannerImage', bannerImage);
-      // bodyFormData.append('additionalPhoto', additionalPhoto);
-      // bodyFormData.append('supportEmail', supportEmail);
-      // bodyFormData.append('storeRating', storeRating);
-      // bodyFormData.append('storeStatus', storeStatus);
-      // bodyFormData.append('supportPhone', supportPhone);
-      // bodyFormData.append('userId', userId);
       const { data } = await axios.put(
         `/api/sr/${storeId}`,
         {
@@ -130,6 +138,48 @@ export default function UserEditScreen() {
     }
   };
 
+  const uploadFileHandler = async (e) => {
+    const file = e.target.files[0];
+    const bodyFormData = new FormData();
+    bodyFormData.append('file', file);
+    try {
+      dispatch({ type: 'UPLOAD_REQUEST' });
+      const { data } = await axios.post('/api/upr', bodyFormData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      });
+      dispatch({ type: 'UPLOAD_SUCCESS' });
+      toast.success('Image uploaded successfully');
+      setBannerImage(data.secure_url);
+    } catch (err) {
+      toast.error(getError(err));
+      dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) });
+    }
+  };
+
+  const uploadFileHandler1 = async (e) => {
+    const file = e.target.files[0];
+    const bodyFormData = new FormData();
+    bodyFormData.append('file', file);
+    try {
+      dispatch({ type: 'UPLOAD_REQUEST' });
+      const { data } = await axios.post('/api/upr', bodyFormData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          authorization: `Bearer ${userInfo.token}`,
+        },
+      });
+      dispatch({ type: 'UPLOAD_SUCCESS' });
+      toast.success('Image uploaded successfully');
+      setAdditionalPhoto(data.secure_url);
+    } catch (err) {
+      toast.error(getError(err));
+      dispatch({ type: 'UPLOAD_FAIL', payload: getError(err) });
+    }
+  };
+
   return (
     <div>
       <Helmet>
@@ -157,19 +207,41 @@ export default function UserEditScreen() {
                 onChange={(e) => setStoreDetail(e.target.value)}
               />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="bimage">
-              <Form.Label>Banner Image</Form.Label>
+            <Form.Group className="mb-3" controlId="pimage">
+              <Form.Label className="mr-3">Banner Image</Form.Label>
+              <img
+                src={bannerImage}
+                className="img-thumbnail"
+                alt={'BannerImage'}
+              />
               <Form.Control
+                className="mt-3"
                 value={bannerImage}
                 onChange={(e) => setBannerImage(e.target.value)}
               />
             </Form.Group>
-            <Form.Group className="mb-3" controlId="aphoto">
-              <Form.Label>Additional Photo</Form.Label>
+            <Form.Group className="mb-3" controlId="imageFile">
+              <Form.Label>Upload Image</Form.Label>
+              <Form.Control type="file" onChange={uploadFileHandler} />
+              {loadingUpload && <LoadingBox></LoadingBox>}
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="pimage">
+              <Form.Label className="mr-3">Additional Photo</Form.Label>
+              <img
+                src={additionalPhoto}
+                className="img-thumbnail"
+                alt={'Additional'}
+              />
               <Form.Control
+                className="mt-3"
                 value={additionalPhoto}
                 onChange={(e) => setAdditionalPhoto(e.target.value)}
               />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="imageFile">
+              <Form.Label>Upload Image</Form.Label>
+              <Form.Control type="file" onChange={uploadFileHandler1} />
+              {loadingUpload1 && <LoadingBox></LoadingBox>}
             </Form.Group>
             <Form.Group className="mb-3" controlId="email">
               <Form.Label>Support Email</Form.Label>

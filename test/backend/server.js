@@ -11,7 +11,7 @@ import productRouter from './routes/productRouter.js';
 import orderRouter from './routes/orderRouter.js';
 import seedRouter from './routes/seedRouter.js';
 import path from 'path';
-
+import uploadRouter from './routes/uploadRouter.js';
 dotenv.config();
 
 mongoose
@@ -33,30 +33,13 @@ app.use(
   })
 );
 
-// app.use('/images', express.static(path.dirname('images')));
-// app.use('/images', express.static(path.dirname('images')));
-
-// app.use('/api/seed', seedRouter);
-// app.get('/api/users', (req, res) => {
-//   res.send(data.users);
-// });
-// app.use('/api/users', userRouter);
-// app.use('/api/images', uploadRouter);
-// app.use(express.static('/public/'));
-
 app.use('/api/seed', seedRouter);
+app.use('/api/upr', uploadRouter);
 app.use('/api/ur', userRouter);
 app.use('/api/cr', categoryRouter);
 app.use('/api/sr', storeRouter);
 app.use('/api/pr', productRouter);
 app.use('/api/or', orderRouter);
-// app.get('/api/products', (req, res) => {
-//   res.send(data.products);
-// });
-
-// app.get('/api/categories', (req, res) => {
-//   res.send(data.categories);
-// });
 
 const __dirname = path.resolve();
 app.use(express.static(path.join(__dirname, '/frontend/build')));

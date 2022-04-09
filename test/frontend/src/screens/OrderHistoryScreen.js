@@ -56,7 +56,7 @@ export default function OrderHistoryScreen() {
       <Helmet>
         <title>Order History</title>
       </Helmet>
-      <Container>
+      <Container className="medium-container">
         <div className="navbar custom-nav">Order History</div>
         {loading ? (
           <LoadingBox></LoadingBox>
@@ -66,7 +66,6 @@ export default function OrderHistoryScreen() {
           <Table borderless className="table-custom">
             <thead>
               <tr>
-                <th>ID</th>
                 <th>DATE</th>
                 <th>TOTAL</th>
                 <th>PAID</th>
@@ -77,7 +76,6 @@ export default function OrderHistoryScreen() {
             <tbody>
               {orders.map((order) => (
                 <tr key={order._id}>
-                  <td>{order._id}</td>
                   <td>{order.createdAt.substring(0, 10)}</td>
                   <td>{order.totalPrice.toFixed(2)}</td>
                   <td>{order.isPaid ? order.paidAt.substring(0, 10) : 'No'}</td>
@@ -93,7 +91,7 @@ export default function OrderHistoryScreen() {
                         navigate(`/order/${order._id}`);
                       }}
                     >
-                      Details
+                      View
                     </Button>
                   </td>
                 </tr>

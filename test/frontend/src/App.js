@@ -46,6 +46,8 @@ import CategoryEditScreen from './screens/CategoryEditScreen';
 import OrdersScreen from './screens/OrderScreen';
 import { Store } from './Store';
 import CreateCategory from './screens/CreateCategory';
+import OrderListScreen from './screens/OrderListScreen';
+import UserOrderScreen from './screens/UserOrderScreen';
 
 function App() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -69,7 +71,7 @@ function App() {
                 <Route path="/shipping" element={<ShippingAddressScreen />} />
                 <Route path="/payment" element={<PaymentMethodScreen />} />
                 <Route path="/placeorder" element={<PlaceOrderScreen />} />
-                <Route path="/order/:id" element={<OrderScreen />}></Route>
+
                 <Route path="/signin" element={<Signin />} />
                 <Route path="/search" element={<SearchProducts />} />
                 <Route path="/searchbar" element={<SearchBar />} />
@@ -205,14 +207,14 @@ function App() {
                     </UserProtectedRoute>
                   }
                 />
-                {/* <Route
+                <Route
                   path="/user/orders"
                   element={
                     <UserProtectedRoute>
-                      <OrdersScreen />
+                      <OrderListScreen />
                     </UserProtectedRoute>
                   }
-                /> */}
+                />
                 <Route
                   path="/user/orderhistory"
                   element={
@@ -229,6 +231,14 @@ function App() {
                     </UserProtectedRoute>
                   }
                 />
+                <Route
+                  path="/orders/:id"
+                  element={
+                    <UserProtectedRoute>
+                      <UserOrderScreen />
+                    </UserProtectedRoute>
+                  }
+                ></Route>
                 <Route
                   path="/customer/dashboard"
                   element={
@@ -258,6 +268,14 @@ function App() {
                     </CustomerProtectedRoute>
                   }
                 />
+                <Route
+                  path="/order/:id"
+                  element={
+                    <CustomerProtectedRoute>
+                      <OrderScreen />
+                    </CustomerProtectedRoute>
+                  }
+                ></Route>
                 {/* <Route path="/uploads" element={<FileUploadScreen />} />  */}
               </Routes>
             </Container>
