@@ -65,7 +65,7 @@ const AllProducts = ({ products }) => {
                     variant="top"
                     src={item.images}
                     alt={item.productName}
-                    className="img-thumbnail"
+                    className="img-thumbnail2 mt-1"
                   />
                 </Col>
 
