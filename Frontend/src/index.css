@@ -309,6 +309,7 @@ body {
     opacity: 0.6;
     object-fit: cover;
     position: relative;
+    border-radius: 30px;
   }
     
   .category-info {
