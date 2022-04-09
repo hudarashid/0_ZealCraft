@@ -1,45 +1,10 @@
-import React, { useEffect, useReducer, useState } from 'react';
-import styled from 'styled-components';
+import React, { useEffect, useReducer } from 'react';
 import logger from 'use-reducer-logger';
 import Button from 'react-bootstrap/Button';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import LoadingBox from './LoadingBox';
-
-const Container = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  padding: 50px;
-`;
-const CategoryContainer = styled.div`
-  flex: 1;
-  margin: 3px;
-  height: 70vh;
-  position: relative;
-`;
-const Image = styled.img`
-  width: 100%;
-  height: 100%;
-  opacity: 0.7;
-  object-fit: cover;
-`;
-
-const Info = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`;
-const Title = styled.h1`
-  color: #3f344a;
-  margin-bottom: 20px;
-`;
+import Col from 'react-bootstrap/esm/Col';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -81,25 +46,31 @@ const Categories = () => {
   }, []);
 
   return (
-    <Container>
+    <div className="categories">
       {loading ? (
         <LoadingBox />
       ) : error ? (
         <div>error</div>
       ) : (
-        categories.map((category) => (
-          <CategoryContainer key={category._id}>
-            <Image src={category.img} alt={category.categoryName} />
-            <Info>
-              <Title>{category.categoryName}</Title>
-              <Button href={`/search`} className="btn-primary">
-                SHOP NOW
-              </Button>
-            </Info>
-          </CategoryContainer>
-        ))
+        <>
+          {categories.map((category) => (
+            <Col key={category._id} className="category-container">
+              <img
+                className="category-img"
+                src={category.img}
+                alt={category.categoryName}
+              />
+              <div className="category-info">
+                <h1 className="category-title">{category.categoryName}</h1>
+                <Button href={`/search`} className="btn-primary">
+                  SHOP NOW
+                </Button>
+              </div>
+            </Col>
+          ))}
+        </>
       )}
-    </Container>
+    </div>
   );
 };
 

@@ -345,7 +345,7 @@ export default function ProductEditScreen() {
             </ToggleButtonGroup>
             <Form.Group className="mb-3" controlId="supportPhone">
               <Form.Label>Product Category</Form.Label>
-              <Form.Control disabled defaultValue={categoryName} />
+              <Form.Control disabled defaultValue={productCategory} />
             </Form.Group>
             <Form.Group className="mb-3" controlId="supportPhone">
               <Form.Label>Store</Form.Label>

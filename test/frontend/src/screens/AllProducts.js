@@ -62,7 +62,6 @@ const AllProducts = ({ products }) => {
               <Row>
                 <Col xs={3}>
                   <Card.Img
-                    style={{ width: '175px', height: '100px', margin: '5px' }}
                     variant="top"
                     src={item.images}
                     alt={item.productName}
@@ -75,14 +74,14 @@ const AllProducts = ({ products }) => {
                     <Col style={{ paddingTop: '10px', color: '#69587c' }}>
                       <p>Description: {item.productDescription}</p>
                       <p>Category: {item.productCategory}</p>
-                      <Col>
-                        Status{' '}
+                      <p>
+                        Status :{' '}
                         {item.quantityOnHand > 0 ? (
                           <Badge bg="success">Available</Badge>
                         ) : (
                           <Badge bg="danger">Unavailable</Badge>
                         )}
-                      </Col>
+                      </p>
                     </Col>
                   </Row>
                 </Col>

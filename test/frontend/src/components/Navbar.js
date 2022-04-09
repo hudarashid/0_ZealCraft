@@ -1,61 +1,13 @@
 import React, { useContext, useState } from 'react';
-import styled from 'styled-components';
 import { Search, ShoppingCartOutlined } from '@material-ui/icons';
 import { Badge } from '@material-ui/core';
-import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import Container from 'react-bootstrap/Container';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Link } from 'react-router-dom';
 import Signin from './Signin';
 import { Store } from '../Store';
 import SearchBar from './SearchBar';
-
-const Container = styled.div`
-  height: 60px;
-`;
-
-const Wrapper = styled.div`
-  padding: 10px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const Left = styled.div`
-  flex: 1;
-  display: flex;
-  align-items: center;
-`;
-
-const SearchContainer = styled.div`
-  border: 0.5px solid lightgray;
-  display: flex;
-  align-items: center;
-  margin-left: 25px;
-  padding: 5px;
-`;
-
-const Center = styled.div`
-  flex: 1;
-  text-align: center;
-`;
-
-const Logo = styled.h1`
-  font-weight: bold;
-`;
-
-const Right = styled.div`
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-`;
-
-const MenuItem = styled.div`
-  font-size: 14px;
-  cursor: pointer;
-  margin-left: 25px;
-`;
 
 const Navbar = () => {
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -77,27 +29,27 @@ const Navbar = () => {
   };
 
   return (
-    <Container>
-      <Wrapper>
-        <Left>
+    <Container style={{ marginBottom: '30px' }}>
+      <div className="navbar-wrapper">
+        <div className="navbar-wrapper-left">
           {userInfo && userInfo.isCustomer ? (
             <>
-              <SearchContainer>
+              <div className="search-container">
                 <Link onClick={handleShowSideBar} to="#">
-                  <Search style={{ color: 'gray', fontSize: 16 }} />
+                  <Search style={{ color: 'gray', fontSize: 20 }} />
                 </Link>
                 <SearchBar
                   showSideBar={showSideBar}
                   setShowSideBar={setShowSideBar}
                 />
-              </SearchContainer>
+              </div>
             </>
           ) : (
             ''
           )}
-        </Left>
-        <Center>
-          <Logo>
+        </div>
+        <div className="navbar-wrapper-center">
+          <h1 className="logo">
             {userInfo && userInfo.isAdmin ? (
               <Link
                 to="/admin/dashboard"
@@ -124,12 +76,12 @@ const Navbar = () => {
                 ZealCraft
               </Link>
             )}
-          </Logo>
-        </Center>
-        <Right>
+          </h1>
+        </div>
+        <div className="navbar-wrapper-right">
           {userInfo && userInfo.isCustomer ? (
             <>
-              <MenuItem>
+              <div className="menu-item">
                 <NavDropdown
                   title="Menu"
                   id="basic-nav-dropdown"
@@ -159,8 +111,8 @@ const Navbar = () => {
                     Sign Out
                   </Link>
                 </NavDropdown>
-              </MenuItem>
-              <MenuItem>
+              </div>
+              <div className="menu-item">
                 <Badge
                   badgeContent={cart.cartItems.reduce(
                     (a, c) => a + c.quantity,
@@ -172,11 +124,11 @@ const Navbar = () => {
                     <ShoppingCartOutlined />
                   </Link>
                 </Badge>
-              </MenuItem>
+              </div>
             </>
           ) : userInfo && userInfo.isUser ? (
             <>
-              <MenuItem>
+              <div className="menu-item">
                 <NavDropdown title="Menu" id="basic-nav-dropdown">
                   <LinkContainer to="/user/dashboard">
                     <NavDropdown.Item>Dashboard</NavDropdown.Item>
@@ -202,7 +154,7 @@ const Navbar = () => {
                     Sign Out
                   </Link>
                 </NavDropdown>
-              </MenuItem>
+              </div>
             </>
           ) : userInfo && userInfo.isAdmin ? (
             <>
@@ -230,18 +182,18 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              <MenuItem>
+              <div className="menu-item">
                 <Link to="/register">REGISTER</Link>
-              </MenuItem>
-              <MenuItem onClick={handleShowModal}>
+              </div>
+              <div className="menu-item" onClick={handleShowModal}>
                 <Link to="#">SIGN IN</Link>
-              </MenuItem>
+              </div>
             </>
           )}
 
           <Signin showModal={showModal} setShowModal={setShowModal} />
-        </Right>
-      </Wrapper>
+        </div>
+      </div>
     </Container>
   );
 };
