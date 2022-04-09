@@ -335,8 +335,12 @@ body {
   }
   
   .category-title {
-    color: #3f344a;
+    /* color: #3f344a; */
+    /* color: #592496; */
+    color: #69587c;
+    background-color: #dcc6f5;
     margin-bottom: 20px;
+    border-radius: 10px;
     -webkit-transform: scale(1);
     transform: scale(1);
     -webkit-transition: .3s ease-in-out;
